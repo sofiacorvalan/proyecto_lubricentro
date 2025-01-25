@@ -18,81 +18,97 @@ class Form2:
         global textBoxPatente, textBoxKM, textBoxCambioAceite, textBoxFiltroAceite, textBoxFiltroAire
         global textBoxFiltroComb, textBoxFiltroHab, textBoxObservaciones
         global varCambioAceite, varFiltroAceite, varFiltroAire, varFiltroComb, varFiltroHab,tree, habilitar_entry
+        global cambioAceiteCheck ,filtroAceiteCheck,filtroAireCheck, filtroCombCheck, filtroHabCheck
 
         
         def habilitar_entry(var, entry):
             """Habilita o deshabilita el Entry según el estado del Checkbutton"""
-            if var.get():
-                entry.config(state="normal")
+            if var.get()== 1:
+                entry.configure(state="normal")
             else:
                 entry.delete(0, END)
-                entry.config(state="disabled")
+                entry.configure(state="disabled")
 
         try:
-            groupBox = LabelFrame(root, text="Ingresa los datos:", padx=5, pady=5)
-            groupBox.grid(row=0, column=0, padx=10, pady=10)
+            # Frame principal
+            groupBox = CTkFrame(root, corner_radius=10)
+            groupBox.grid(row=0, column=0, padx=10, pady=10, sticky='nw')
+
+            # Título para el Frame
+            CTkLabel(groupBox, text="Ingresa los datos:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=(0, 10))
 
             # Patente
-            Label(groupBox, text="Patente:", width=ancho_entry, font=("arial", 12)).grid(row=0, column=0)
-            textBoxPatente = Entry(groupBox, width=ancho_entry)
-            textBoxPatente.grid(row=0, column=1)
+            CTkLabel(groupBox, text="Patente:", font=("Arial", 13)).grid(row=1, column=0, sticky="w", padx=10, pady=5)
+            textBoxPatente = CTkEntry(groupBox, width=200)
+            textBoxPatente.grid(row=1, column=1, padx=10, pady=5)
 
             # Kilómetros
-            Label(groupBox, text="Kilómetros:", width=ancho_entry, font=("arial", 12)).grid(row=1, column=0)
-            textBoxKM = Entry(groupBox, width=ancho_entry)
-            textBoxKM.grid(row=1, column=1)
+            CTkLabel(groupBox, text="Kilómetros:", font=("Arial", 13)).grid(row=2, column=0, sticky='w', padx=10, pady=5)
+            textBoxKM = CTkEntry(groupBox, width=200)
+            textBoxKM.grid(row=2, column=1, padx=10, pady=5)
 
-            # Cambio aceite
+            # Cambio de aceite
             varCambioAceite = IntVar()
-            cambioAceiteCheck = Checkbutton(groupBox, text="Cambio aceite", variable=varCambioAceite, command=lambda: habilitar_entry(varCambioAceite, textBoxCambioAceite))
-            cambioAceiteCheck.grid(row=2, column=0, sticky=W)
-            textBoxCambioAceite = Entry(groupBox, width=ancho_entry, state="disabled")
-            textBoxCambioAceite.grid(row=2, column=1)
+            cambioAceiteCheck = CTkCheckBox(groupBox, text="Cambio aceite", variable=varCambioAceite, command=lambda: habilitar_entry(varCambioAceite, textBoxCambioAceite))
+            cambioAceiteCheck.grid(row=3, column=0, sticky='w', padx=10, pady=5)
+            textBoxCambioAceite = CTkEntry(groupBox, width=200)
+            textBoxCambioAceite.grid(row=3, column=1, padx=10, pady=5)
+            textBoxCambioAceite.configure(state="disabled")
 
             # Filtro de aceite
             varFiltroAceite = IntVar()
-            filtroAceiteCheck = Checkbutton(groupBox, text="Filtro de aceite", variable=varFiltroAceite, command=lambda: habilitar_entry(varFiltroAceite, textBoxFiltroAceite))
-            filtroAceiteCheck.grid(row=3, column=0, sticky=W)
-            textBoxFiltroAceite = Entry(groupBox, width=ancho_entry, state="disabled")
-            textBoxFiltroAceite.grid(row=3, column=1)
+            filtroAceiteCheck = CTkCheckBox(groupBox, text="Filtro de aceite", variable=varFiltroAceite, command=lambda: habilitar_entry(varFiltroAceite, textBoxFiltroAceite))
+            filtroAceiteCheck.grid(row=4, column=0, sticky='w', padx=10, pady=5)
+            textBoxFiltroAceite = CTkEntry(groupBox, width=200)
+            textBoxFiltroAceite.grid(row=4, column=1, padx=10, pady=5)
+            textBoxFiltroAceite.configure(state="disabled")
 
             # Filtro de aire
             varFiltroAire = IntVar()
-            filtroAireCheck = Checkbutton(groupBox, text="Filtro de aire", variable=varFiltroAire, command=lambda: habilitar_entry(varFiltroAire, textBoxFiltroAire))
-            filtroAireCheck.grid(row=4, column=0, sticky=W)
-            textBoxFiltroAire = Entry(groupBox, width=ancho_entry, state="disabled")
-            textBoxFiltroAire.grid(row=4, column=1)
+            filtroAireCheck = CTkCheckBox(groupBox, text="Filtro de aire", variable=varFiltroAire, command=lambda: habilitar_entry(varFiltroAire, textBoxFiltroAire))
+            filtroAireCheck.grid(row=5, column=0, sticky='w', padx=10, pady=5)
+            textBoxFiltroAire = CTkEntry(groupBox, width=200)
+            textBoxFiltroAire.grid(row=5, column=1, padx=10, pady=5)
+            textBoxFiltroAire.configure(state="disabled")
 
             # Filtro de combustible
             varFiltroComb = IntVar()
-            filtroCombCheck = Checkbutton(groupBox, text="Filtro de combustible", variable=varFiltroComb, command=lambda: habilitar_entry(varFiltroComb, textBoxFiltroComb))
-            filtroCombCheck.grid(row=5, column=0, sticky=W)
-            textBoxFiltroComb = Entry(groupBox, width=ancho_entry, state="disabled")
-            textBoxFiltroComb.grid(row=5, column=1)
+            filtroCombCheck = CTkCheckBox(groupBox, text="Filtro de combustible", variable=varFiltroComb, command=lambda: habilitar_entry(varFiltroComb, textBoxFiltroComb))
+            filtroCombCheck.grid(row=6, column=0, sticky='w', padx=10, pady=5)
+            textBoxFiltroComb = CTkEntry(groupBox, width=200)
+            textBoxFiltroComb.grid(row=6, column=1, padx=10, pady=5)
+            textBoxFiltroComb.configure(state="disabled")
 
             # Filtro de habitáculo
             varFiltroHab = IntVar()
-            filtroHabCheck = Checkbutton(groupBox, text="Filtro de habitáculo", variable=varFiltroHab, command=lambda: habilitar_entry(varFiltroHab, textBoxFiltroHab))
-            filtroHabCheck.grid(row=6, column=0, sticky=W)
-            textBoxFiltroHab = Entry(groupBox, width=ancho_entry, state="disabled")
-            textBoxFiltroHab.grid(row=6, column=1)
+            filtroHabCheck = CTkCheckBox(groupBox, text="Filtro de habitáculo", variable=varFiltroHab, command=lambda: habilitar_entry(varFiltroHab, textBoxFiltroHab))
+            filtroHabCheck.grid(row=7, column=0, sticky='w', padx=10, pady=5)
+            textBoxFiltroHab = CTkEntry(groupBox, width=200)
+            textBoxFiltroHab.grid(row=7, column=1, padx=10, pady=5)
+            textBoxFiltroHab.configure(state="disabled")
 
             # Observaciones
-            Label(groupBox, text="Observaciones:", width=ancho_entry, font=("arial", 12)).grid(row=7, column=0)
-            textBoxObservaciones = Entry(groupBox, width=ancho_entry)
-            textBoxObservaciones.grid(row=7, column=1)
+            CTkLabel(groupBox, text="Observaciones:", font=("Arial", 13)).grid(row=8, column=0, sticky='w', padx=10, pady=5)
+            textBoxObservaciones = CTkEntry(groupBox, width=200)
+            textBoxObservaciones.grid(row=8, column=1, padx=10, pady=5)
 
             # Botones
-            Button(groupBox, text="Guardar", width=10, command=guardarRegistros).grid(row=8, column=0)
-            Button(groupBox, text="Modificar", width=10, command=modificarRegistros).grid(row=8, column=1)
-            Button(groupBox, text="Eliminar", width=10, command=eliminarRegistros).grid(row=8, column=2)
-            Button(groupBox, text="Limpiar",width=10, command=limpiarCampos).grid(row=9, column=2)
+            CTkButton(groupBox, text="Guardar", command=guardarRegistros).grid(row=9, column=0, pady=10, padx=5)
+            CTkButton(groupBox, text="Modificar", command=modificarRegistros).grid(row=9, column=1, pady=10, padx=5)
+            CTkButton(groupBox, text="Eliminar", command=eliminarRegistros).grid(row=10, column=0, pady=10, padx=5)
+            CTkButton(groupBox, text="Limpiar", command=limpiarCampos).grid(row=10, column=1, pady=10, padx=5)
 
             # Tabla
-            groupBoxTabla = LabelFrame(root, text="Servicios realizados:", padx=5, pady=5)
-            groupBoxTabla.grid(row=0, column=1, padx=10, pady=10)
+            groupBoxTabla = CTkFrame(root, corner_radius=10)
+            groupBoxTabla.grid(row=0, column=1, padx=10, pady=10, sticky='nw')
 
-            tree = ttk.Treeview(groupBoxTabla, columns=("Patente","KMs", "Vehículo", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)
+            CTkLabel(groupBoxTabla, text="Servicios realizados:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=10)
+            
+            tree = ttk.Treeview(groupBoxTabla, style='Custom.Treeview',columns=("Patente","KMs", "Vehículo", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=20)
+            tree.grid(row=0, column=0, sticky="nsew")  # Coloca el Treeview en la posición deseada
+            groupBoxTabla.grid_rowconfigure(0, weight=1)
+            groupBoxTabla.grid_columnconfigure(0, weight=1)
+
             tree.column("# 1", anchor=CENTER, width=100)
             tree.heading("# 1", text="Patente")
             tree.column("# 2", anchor=CENTER, width=100)
@@ -114,7 +130,7 @@ class Form2:
                 tree.insert("", "end", values=row[1:-2], tags=tags)
                
             tree.bind("<<TreeviewSelect>>", seleccionarRegistros)
-            tree.pack()
+            #tree.pack()
 
         except ValueError as error:
             print("Error al actualizar los datos{}".format(error))
@@ -181,26 +197,28 @@ def seleccionarRegistros(e):
     try:
         itemSeleccionado = tree.focus()
         tags = tree.item(itemSeleccionado, "tags")
-        print(tags)  # Para depurar
+        print(f"Tags:{tags}")  # Para depurar
 
-        id_general = tags[0]
-        id_servicio = tags[2]
-                
-        print('id general:', id_general,'id serv:', id_servicio)
+        if len(tags) >= 3:
+            id_general = tags[0]
+            id_servicio = tags[2]
+            print(f'id general: {id_general}, id serv: {id_servicio}')
+        else:
+            print("Error: tags no contienen suficientes elementos.")
+            return  # Salir de la función si no se pueden acceder a los tags necesarios
         
         limpiarCampos()
-        
-        textBoxCambioAceite.configure(state="disabled")
-        textBoxFiltroAceite.configure(state="disabled")
-        textBoxFiltroAire.configure(state="disabled")
-        textBoxFiltroComb.configure(state="disabled")
-        textBoxFiltroHab.configure(state="disabled")
-        textBoxObservaciones.configure(state="disabled")
-        
+        #  # Deshabilitar todos los checkboxes
+        cambioAceiteCheck.configure(state="disabled")
+        filtroAceiteCheck.configure(state="disabled")
+        filtroAireCheck.configure(state="disabled")
+        filtroCombCheck.configure(state="disabled")
+        filtroHabCheck.configure(state="disabled")
+         
         if itemSeleccionado: 
             # Obtener los valores de las columnas del elemento seleccionado
             values = tree.item(itemSeleccionado)['values']
-            print(values)  # Imprime los valores
+            print(f"Valores de la tabla:{values}")  # Imprime los valores
 
             textBoxPatente.delete(0, END)
             textBoxPatente.insert(0,values[0])
@@ -317,3 +335,19 @@ def limpiarCampos():
     varFiltroAire.set(0)
     varFiltroComb.set(0)
     varFiltroHab.set(0)
+
+     # Deshabilitar los Entry    
+    textBoxCambioAceite.configure(state='disabled')
+    textBoxFiltroAceite.configure(state='disabled')
+    textBoxFiltroAire.configure(state='disabled')
+    textBoxFiltroComb.configure(state='disabled')
+    textBoxFiltroHab.configure(state='disabled')
+
+    #Habilitar checks
+    cambioAceiteCheck.configure(state="normal")
+    filtroAceiteCheck.configure(state="normal")
+    filtroAireCheck.configure(state="normal")
+    filtroCombCheck.configure(state="normal")
+    filtroHabCheck.configure(state="normal")
+
+    

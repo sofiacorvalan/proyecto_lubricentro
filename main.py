@@ -29,10 +29,10 @@ class MainApp:
         """ Inicializa la ventana principal con una caja de búsqueda y dos botones."""
         self.root = root
         self.root.title("WILLY GARAGE")
-        self.root.geometry("800x400")
+        self.root.geometry("1200x600")
         self.root.iconbitmap('bandera1.ico') 
         set_default_color_theme("green")   
-
+        
         self.switch = CTkSwitch(root, text="Tema", command=self.cambiarTema)
         self.switch.pack(anchor="ne", pady=10, padx=10)  # "ne" lo coloca en la esquina superior derecha
         
@@ -47,8 +47,7 @@ class MainApp:
         self.tab_inicio = self.tab_control.tab('Inicio')
         self.tab_clientes = self.tab_control.tab('Clientes')
         self.tab_servicios = self.tab_control.tab('Servicios')
-
-        
+    
         # Caja de búsqueda por patente
         frame1 = CTkFrame(self.tab_inicio)
         frame1.pack(pady=5)
@@ -82,7 +81,29 @@ class MainApp:
     
         CTkButton(frame3, text='Buscar', width=85, command=self.buscadorCliente).pack(side='left', pady=5)
 
+        #Estilizar los treeView
+        style = ttk.Style()
+        style.theme_use('clam')
+        # Configuración del estilo para Treeview
+        style.configure("Custom.Treeview",
+                        font=("Arial", 10),  # Cambiar la fuente
+                        foreground="black",  # Color del texto
+                        background="white",  # Color de fondo de las filas
+                        rowheight=25)  # Altura de las filas
+
+        # Estilizar las columnas de los encabezados
+        style.configure("Custom.Treeview.Heading",
+                        font=("Arial", 11, "bold"),  # Fuente del encabezado
+                        foreground="white",  # Color del texto del encabezado
+                        background="#2FA572")
+        
+        style.map("Custom.Treeview", background=[('selected', '#979DA2')])
+
+        self.frame4 = CTkFrame(self.tab_inicio, corner_radius=10)
+        self.frame4.pack(pady=5)
+
         Form1(self.tab_clientes)
+    
         Form2(self.tab_servicios)  
 
     def cambiarTema(self):
@@ -113,7 +134,7 @@ class MainApp:
                 if not resultados_patente:
                     messagebox.showinfo("Sin resultados", "No hay servicios registrados para esta patente")
                 else:
-                    self.tree = ttk.Treeview(self.tab_inicio, columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings')  
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings')  
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  
@@ -122,7 +143,8 @@ class MainApp:
 
                     self.tree.pack(side='left', fill='both', expand=True)
                     self.actualizarTreeView(resultados_patente)
-                    self.caja_buscar_patente.delete(0, END)
+            
+            self.caja_buscar_patente.delete(0, END)
 
         except ValueError as error:
             print(f'Error al consultar patente: {error}')
@@ -141,8 +163,8 @@ class MainApp:
 
                 if not resultados_vehiculo:
                     messagebox.showinfo("Sin resultados", "Este modelo de vehiculo no tiene servicios registrados.")
-                else:     
-                    self.tree = ttk.Treeview(self.tab_inicio, columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)  
+                else:       
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)  
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  
@@ -175,7 +197,7 @@ class MainApp:
                 if not resultados_cliente:
                     messagebox.showinfo("Sin resultados", "No hay servicios registrados a nombre del cliente.")
                 else:
-                    self.tree = ttk.Treeview(self.tab_inicio, columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  # Usar un valor predeterminado si no está en el diccionario

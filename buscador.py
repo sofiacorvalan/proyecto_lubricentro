@@ -6,7 +6,7 @@ class CBuscador:
         try:
             cone=CConexion.ConexionBaseDeDatos()
             cursor=cone.cursor()
-            sql_consulta=('select c.nombre_apellido, sg.id_general, v.patente, sg.km_actual, v.modelo_vehiculo, s.nombre_servicio, sr.detalles, sg.fecha,sg.observaciones, sr.id_servicio, sr.id_servicio_realizado, sg.km_actual+10000 as "Proximo servicio" from clientes c inner join vehiculos v on c.id_cliente = v.id_cliente inner join servicio_general sg on sg.patente = v.patente inner join servicios_realizados sr on sg.id_general = sr.id_general inner join servicios s on s.id_servicio = sr.id_servicio where v.patente = %s order by sr.id_servicio_realizado desc;')
+            sql_consulta=('select c.nombre_apellido, sg.id_general, v.patente, sg.km_actual, v.modelo_vehiculo, s.nombre_servicio, sr.detalles, sg.fecha,sg.observaciones, sr.id_servicio, sr.id_servicio_realizado, sg.km_actual+10000 as "Proximo servicio" from clientes c inner join vehiculos v on c.id_cliente = v.id_cliente inner join servicio_general sg on sg.patente = v.patente inner join servicios_realizados sr on sg.id_general = sr.id_general inner join servicios s on s.id_servicio = sr.id_servicio where v.patente = %s order by sg.fecha desc;')
             valores = (patente,)
             cursor.execute(sql_consulta,valores)
 

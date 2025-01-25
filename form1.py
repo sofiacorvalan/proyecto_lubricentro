@@ -51,7 +51,7 @@ class Form1:
             CTkLabel(groupBoxLista, text="Lista de clientes:", font=("Arial", 15, 'bold') ).pack(pady=(0, 10))
 
             # Crear un Treeview
-            tree = ttk.Treeview(groupBoxLista, columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=15)
+            tree = ttk.Treeview(groupBoxLista, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=15)
             tree.column("#1", anchor=CENTER, width=ancho)
             tree.heading("#1", text="Nombre y Apellido")
             tree.column("#2", anchor=CENTER, width=ancho)
