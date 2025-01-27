@@ -71,3 +71,18 @@ class CClientes:
             cone.close()
         except mysql.connector.Error as error:
             print("No fue posible eliminar el registro{}".format(error))
+    
+    def verificarPatente(patente):
+        try:
+            cone = CConexion.ConexionBaseDeDatos()
+            cursor = cone.cursor()
+            sql = ' select count(*) from vehiculos where patente= %s;'
+            valores = (patente,)
+            cursor.execute(sql, valores)
+            resultado = cursor.fetchone()  # Obtiene el resultado de la consulta
+            cursor.close()
+            cone.close()
+            # Retorna True si la patente ya existe, de lo contrario False
+            return resultado[0] > 0
+        except mysql.connector.Error as error:
+            print("No fue posible obtener la patente{}".format(error))

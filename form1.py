@@ -75,13 +75,45 @@ class Form1:
         global textBoxFullName, textBoxPhone, textBoxVehicle, textBoxPatente
 
         try:
-            if not all([textBoxFullName, textBoxPhone, textBoxVehicle, textBoxPatente]):
-                print("Los widget no están inicializados")
+            # Verificar que todos los campos tengan datos
+            if not all([textBoxFullName.get(), textBoxPhone.get(), textBoxVehicle.get(), textBoxPatente.get()]):
+                messagebox.showinfo("Error de datos", "Todos los campos son obligatorios. Por favor, complételos.")
+                return  # Salir de la función si falta algún dato
+
+            # Validar nombre completo
+            if len(textBoxFullName.get().strip()) < 2:  # Nombre demasiado corto
+                messagebox.showinfo("Error de datos", "El nombre completo debe tener al menos 2 caracteres.")
                 return
-            nombre_completo = textBoxFullName.get()
-            telefono = textBoxPhone.get()
-            patente = textBoxPatente.get()
-            vehiculo = textBoxVehicle.get()
+            else: 
+                nombre_completo = textBoxFullName.get()
+
+            # Validar teléfono
+            if not textBoxPhone.get().isdigit():  # Verificar que sean solo números
+                messagebox.showinfo("Error de datos", "El teléfono debe contener solo números.")
+                return
+            elif len(textBoxPhone.get()) < 10 or len(textBoxPhone.get()) > 13:  # Verificar rango
+                messagebox.showinfo("Error de datos", "El teléfono debe tener entre 10 y 13 dígitos.")
+                return
+            else:
+                telefono = textBoxPhone.get()
+
+            # Validar patente
+            if len(textBoxPatente.get()) < 6 or len(textBoxPatente.get()) > 8 :  # Ejemplo: Patentes argentinas suelen tener 6-7 caracteres
+                messagebox.showinfo("Error de datos", "La patente debe tener entre 6 y 8 caracteres.")
+                return
+            elif CClientes.verificarPatente(textBoxPatente.get()):
+                messagebox.showinfo("Error de datos", "La patente ya está registrada.")
+                return
+            else:
+                patente = textBoxPatente.get()
+
+            # Validar vehículo
+            if len(textBoxVehicle.get().strip()) < 3:  # Nombre del vehículo demasiado corto
+                messagebox.showinfo("Error de datos", "El nombre del vehículo debe tener al menos 3 caracteres.")
+                return
+            else:
+                vehiculo = textBoxVehicle.get()
+
 
             CClientes.ingresarClientes(nombre_completo, telefono, patente, vehiculo)
             messagebox.showinfo("Información:", "Los datos fueron guardados")
@@ -97,9 +129,13 @@ class Form1:
             textBoxPhone.delete(0, END)
             textBoxVehicle.delete(0, END)
             textBoxPatente.delete(0, END)
+
+            tree.selection_remove(tree.selection())
+            tree.focus("")
+
         except ValueError as error:
             print(f"No se pudieron borrar los campos de entrada: {error}")
-
+                
     def actualizarTreeView(self):
         global tree
 
@@ -119,6 +155,7 @@ class Form1:
 
             if itemSeleccionado: 
                 id_seleccionado = tree.item(itemSeleccionado, "tags")[0]
+                print(f"Id:{id_seleccionado}")
                 values = tree.item(itemSeleccionado)['values']
                 
                 textBoxFullName.delete(0, END)
@@ -137,14 +174,36 @@ class Form1:
         global textBoxFullName, textBoxPhone, textBoxPatente, textBoxVehicle
         
         try:
-            if not all([textBoxFullName, textBoxPhone, textBoxPatente, textBoxVehicle]):
-                print("Los widget no están inicializados")
-                return
+            if not all([textBoxFullName.get(), textBoxPhone.get(), textBoxVehicle.get(), textBoxPatente.get()]):
+                messagebox.showinfo("Error de datos", "Todos los campos son obligatorios. Por favor, complételos.")
+                return  # Salir de la función si falta algún dato
             
-            nombre_completo = textBoxFullName.get()
-            telefono = textBoxPhone.get()
-            patente = textBoxPatente.get()
-            vehiculo = textBoxVehicle.get()
+            if len(textBoxFullName.get().strip()) < 2:  # Nombre demasiado corto
+                messagebox.showinfo("Error de datos", "El nombre completo debe tener al menos 2 caracteres.")
+                return
+            else: 
+                nombre_completo = textBoxFullName.get()
+
+            if not textBoxPhone.get().isdigit(): 
+                messagebox.showinfo("Error de datos", "El teléfono debe contener solo números.")
+                return
+            elif len(textBoxPhone.get()) < 10 or len(textBoxPhone.get()) > 13:  
+                messagebox.showinfo("Error de datos", "El teléfono debe tener entre 10 y 13 dígitos.")
+                return
+            else:
+                telefono = textBoxPhone.get()
+
+            if len(textBoxPatente.get()) < 6 or len(textBoxPatente.get()) > 8 : 
+                messagebox.showinfo("Error de datos", "La patente debe tener entre 6 y 8 caracteres.")
+                return
+            else:
+                patente = textBoxPatente.get()
+
+            if len(textBoxVehicle.get().strip()) < 3:  
+                messagebox.showinfo("Error de datos", "El nombre del vehículo debe tener al menos 3 caracteres.")
+                return
+            else:
+                vehiculo = textBoxVehicle.get()
 
             CClientes.modificarClientes(id_seleccionado, nombre_completo, telefono, patente, vehiculo)
             messagebox.showinfo("Información:", "Los datos fueron actualizados.")
@@ -159,11 +218,17 @@ class Form1:
         global id_seleccionado
 
         try:
-            CClientes.eliminarClientes(id_seleccionado)
-            messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+            
+            respuesta = messagebox.askquestion(
+            "¿Está seguro que desea eliminar?",
+            "Se eliminará el cliente y todos los servicios vinculados a esta patente.",
+            icon="warning")
 
-            self.actualizarTreeView()
-            self.limpiarCampos()
+            if respuesta == "yes":
+                CClientes.eliminarClientes(id_seleccionado)
+                messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+                self.actualizarTreeView()
+                self.limpiarCampos()
 
         except ValueError as error:
             print("Error al eliminar los datos: {}".format(error))
