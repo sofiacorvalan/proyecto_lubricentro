@@ -4,6 +4,8 @@ from tkinter import *
 from tkinter import messagebox
 from customtkinter import *
 from clientes import *
+from form2 import *
+from buscador import *
 
 class Form1:
     global ancho, id_seleccionado
@@ -172,39 +174,62 @@ class Form1:
 
     def modificarRegistros(self):
         global textBoxFullName, textBoxPhone, textBoxPatente, textBoxVehicle
-        
+
         try:
+            # Verificar que todos los campos estén completos
             if not all([textBoxFullName.get(), textBoxPhone.get(), textBoxVehicle.get(), textBoxPatente.get()]):
                 messagebox.showinfo("Error de datos", "Todos los campos son obligatorios. Por favor, complételos.")
                 return  # Salir de la función si falta algún dato
-            
-            if len(textBoxFullName.get().strip()) < 2:  # Nombre demasiado corto
+
+            # Validación del nombre
+            if len(textBoxFullName.get()) < 2:  
                 messagebox.showinfo("Error de datos", "El nombre completo debe tener al menos 2 caracteres.")
                 return
-            else: 
-                nombre_completo = textBoxFullName.get()
+            nombre_completo = textBoxFullName.get()
 
+            # Validación del teléfono
             if not textBoxPhone.get().isdigit(): 
                 messagebox.showinfo("Error de datos", "El teléfono debe contener solo números.")
                 return
             elif len(textBoxPhone.get()) < 10 or len(textBoxPhone.get()) > 13:  
                 messagebox.showinfo("Error de datos", "El teléfono debe tener entre 10 y 13 dígitos.")
                 return
-            else:
-                telefono = textBoxPhone.get()
+            telefono = textBoxPhone.get()
 
-            if len(textBoxPatente.get()) < 6 or len(textBoxPatente.get()) > 8 : 
+            # Obtenemos los datos actuales del cliente
+            datos_cliente = CClientes.mostrarClienteID(id_seleccionado)  
+            print(f'Datos del cliente: {datos_cliente}')
+            
+            # Validación de la patente
+            if len(textBoxPatente.get()) < 6 or len(textBoxPatente.get()) > 8: 
                 messagebox.showinfo("Error de datos", "La patente debe tener entre 6 y 8 caracteres.")
                 return
-            else:
-                patente = textBoxPatente.get()
 
+            # Verificar si la patente ingresada es diferente de la actual
+            if textBoxPatente.get() != datos_cliente[3]:
+                print(f"Patente nueva ingresada: {textBoxPatente.get()}")
+                
+                print('A VER:', CBuscador.verificarServicio(textBoxPatente.get()))
+
+                # Verificar si la nueva patente tiene servicios vinculados
+                if CBuscador.verificarServicio(datos_cliente[3]):
+                    print("La patente tiene servicios vinculados.")
+                    messagebox.showinfo("Aviso", "La patente no se puede modificar porque ya tiene servicios vinculados.")
+                    patente = datos_cliente[3]  # Mantener la patente actual
+                else:
+                    print("La patente no tiene servicios vinculados.")
+                    patente = textBoxPatente.get()  # Usar la nueva patente si no tiene servicios vinculados
+            else:
+                # Si la patente no cambia, mantener la patente actual
+                patente = datos_cliente[3]
+
+            # Validación del nombre del vehículo
             if len(textBoxVehicle.get().strip()) < 3:  
                 messagebox.showinfo("Error de datos", "El nombre del vehículo debe tener al menos 3 caracteres.")
                 return
-            else:
-                vehiculo = textBoxVehicle.get()
+            vehiculo = textBoxVehicle.get()
 
+            # Actualización de los datos del cliente
             CClientes.modificarClientes(id_seleccionado, nombre_completo, telefono, patente, vehiculo)
             messagebox.showinfo("Información:", "Los datos fueron actualizados.")
 
@@ -212,7 +237,8 @@ class Form1:
             self.limpiarCampos()
 
         except ValueError as error:
-            print("Error al actualizar los datos: {}".format(error))
+            print("Error al actualizar los datos:", error)
+
 
     def eliminarRegistros(self):
         global id_seleccionado
@@ -229,6 +255,7 @@ class Form1:
                 messagebox.showinfo("Información:", "Los datos fueron eliminados.")
                 self.actualizarTreeView()
                 self.limpiarCampos()
+                Form2.actualizarTreeView()
 
         except ValueError as error:
             print("Error al eliminar los datos: {}".format(error))

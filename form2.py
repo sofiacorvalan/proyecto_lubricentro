@@ -6,6 +6,7 @@ from customtkinter import *
 from servicios import *
 from datetime import date
 from clientes import *
+from buscador import *
 
 class Form2:
 
@@ -93,10 +94,10 @@ class Form2:
             textBoxObservaciones.grid(row=8, column=1, padx=10, pady=5)
 
             # Botones
-            CTkButton(groupBox, text="Guardar", command=guardarRegistros).grid(row=9, column=0, pady=10, padx=5)
-            CTkButton(groupBox, text="Modificar", command=modificarRegistros).grid(row=9, column=1, pady=10, padx=5)
-            CTkButton(groupBox, text="Eliminar", command=eliminarRegistros).grid(row=10, column=0, pady=10, padx=5)
-            CTkButton(groupBox, text="Limpiar", command=limpiarCampos).grid(row=10, column=1, pady=10, padx=5)
+            CTkButton(groupBox, text="Guardar", command=self.guardarRegistros).grid(row=9, column=0, pady=10, padx=5)
+            CTkButton(groupBox, text="Modificar", command=self.modificarRegistros).grid(row=9, column=1, pady=10, padx=5)
+            CTkButton(groupBox, text="Eliminar", command=self.eliminarRegistros).grid(row=10, column=0, pady=10, padx=5)
+            CTkButton(groupBox, text="Limpiar", command=self.limpiarCampos).grid(row=10, column=1, pady=10, padx=5)
 
             # Tabla
             groupBoxTabla = CTkFrame(root, corner_radius=10)
@@ -123,231 +124,303 @@ class Form2:
             tree.heading("# 6", text="Fecha")
             tree.column("# 7", anchor=CENTER, width=100)
             tree.heading("# 7", text="Observaciones")
-            
-            
+                        
             for row in CServicios.mostrarServiciosRealizados():
                 tags = (row[0], row[8], row[9])
                 tree.insert("", "end", values=row[1:-2], tags=tags)
                
-            tree.bind("<<TreeviewSelect>>", seleccionarRegistros)
+            tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
             #tree.pack()
 
         except ValueError as error:
             print("Error al actualizar los datos{}".format(error))
 
-def guardarRegistros():
-    global encontrada
-    try:
-        # Obtener valores del formulario
-        fecha = date.today()
-        km_actual = textBoxKM.get()
-        observaciones = textBoxObservaciones.get()
-        
-        # Verificar si la patente está en los datos
-        datos = CClientes.mostrarClientes()
-        patente_ingresada = textBoxPatente.get()
-        encontrada = False
+    def guardarRegistros(self):
+        global encontrada
+        try:
+            # Obtener valores del formulario
+            fecha = date.today()
+            observaciones = textBoxObservaciones.get()
 
-        for cliente in datos:
-            if cliente[3] == patente_ingresada: 
-                encontrada = True
-                patente = patente_ingresada
-                break
-        else:
-            messagebox.showwarning("Advertencia","La patente no se encuentra registrada. Por favor verifique el cliente.")
+            # Verificar si la patente está en los datos
+            datos = CClientes.mostrarClientes()
+            patente_ingresada = textBoxPatente.get().strip()  # Eliminar espacios extra
+            encontrada = False
 
-        # Crear una lista de servicios seleccionados
-        servicios = []
-        if varCambioAceite.get():
-            servicios.append((1, textBoxCambioAceite.get()))
-        if varFiltroAceite.get():
-            servicios.append((2, textBoxFiltroAceite.get()))
-        if varFiltroAire.get():
-            servicios.append((3, textBoxFiltroAire.get()))
-        if varFiltroComb.get():
-            servicios.append((4, textBoxFiltroComb.get()))
-        if varFiltroHab.get():
-            servicios.append((5, textBoxFiltroHab.get()))
+            # Validación de la patente
+            if len(patente_ingresada) < 6 or len(patente_ingresada) > 8:
+                messagebox.showinfo("Error de datos", "La patente debe tener entre 6 y 8 caracteres.")
+                return
 
-        print(f"Servicios seleccionados: {servicios}")
-        
-        # Llamar al método ingresarServicios solo si hay servicios seleccionados
-        if servicios:
+            for cliente in datos:
+                if cliente[3] == patente_ingresada:
+                    encontrada = True
+                    patente_verificada = patente_ingresada
+                    break
+            else:
+                messagebox.showwarning("Advertencia", "La patente no se encuentra registrada. Por favor verifique el cliente.")
+                return  # Salir si la patente no está registrada
+
+            # Validación de los KMs
+            km_text = textBoxKM.get().strip()  # Eliminar espacios extra
+            if not km_text:
+                messagebox.showinfo("Error de datos", "Debe ingresar los KMs.")
+                return
+            if not km_text.isdigit():
+                messagebox.showinfo("Error de datos", "Los KMs deben contener solo números.")
+                return
+
+            # Convertir a entero después de validar
+            km_ingresados = int(km_text)
+
+            # Verificar que los KMs no sean menores a los ya registrados
+            data = CBuscador.buscarPorPatente(patente_verificada)
+            for cliente in data:
+                kms_registrados = cliente[3]  # Suponiendo que cliente[3] almacena los KMs registrados
+                if kms_registrados > km_ingresados:
+                    messagebox.showwarning("Advertencia", "Los KMs ingresados no pueden ser menores a los KMs registrados para esta patente.")
+                    return  # Salir si los KMs son menores
+
+            # Si todo es válido, asignar a km_actual
+            km_actual = km_ingresados  # Esto solo se ejecuta si pasa todas las validaciones
+
+            # Crear una lista de servicios seleccionados
+            servicios = []
+            if varCambioAceite.get():
+                servicios.append((1, textBoxCambioAceite.get()))
+            if varFiltroAceite.get():
+                servicios.append((2, textBoxFiltroAceite.get()))
+            if varFiltroAire.get():
+                servicios.append((3, textBoxFiltroAire.get()))
+            if varFiltroComb.get():
+                servicios.append((4, textBoxFiltroComb.get()))
+            if varFiltroHab.get():
+                servicios.append((5, textBoxFiltroHab.get()))
+
+            print(f"Servicios seleccionados: {servicios}")
+
+            # Validar si hay servicios seleccionados
+            if not servicios:
+                messagebox.showwarning("Advertencia", "No se seleccionó ningún servicio.")
+                return
+
+            # Ingresar servicios al sistema
             CServicios.ingresarServicios(
                 fecha=fecha,
-                km_actual=km_actual,
-                patente=patente,
+                km_actual=km_actual,  # Aquí km_actual está correctamente asignado
+                patente=patente_verificada,
                 observaciones=observaciones,
                 servicios=servicios
             )
             messagebox.showinfo("Éxito", "Datos guardados correctamente.")
-        else:
-            messagebox.showwarning("Advertencia", "No se seleccionó ningún servicio.")
-        
-        limpiarCampos()    
-        actualizarTreeView()
 
-    except ValueError as error:
-        print(f"Error al ingresar los datos: {error}")
+            # Limpiar campos y actualizar TreeView
+            self.limpiarCampos()
+            self.actualizarTreeView()
+
+        except ValueError as error:
+            messagebox.showerror("Error", f"Ocurrió un error al guardar los datos: {error}")
+            print(f"Error al ingresar los datos: {error}")
 
 
-def seleccionarRegistros(e):
-    global id_general,id_servicio
+    def seleccionarRegistros(self, e):
+        global id_general,id_servicio
 
-    try:
-        itemSeleccionado = tree.focus()
-        tags = tree.item(itemSeleccionado, "tags")
-        print(f"Tags:{tags}")  # Para depurar
+        try:
+            itemSeleccionado = tree.focus()
+            tags = tree.item(itemSeleccionado, "tags")
+            print(f"Tags:{tags}")  # Para depurar
 
-        if len(tags) >= 3:
-            id_general = tags[0]
-            id_servicio = tags[2]
-            print(f'id general: {id_general}, id serv: {id_servicio}')
-        else:
-            print("Error: tags no contienen suficientes elementos.")
-            return  # Salir de la función si no se pueden acceder a los tags necesarios
-        
-        limpiarCampos()
-        #  # Deshabilitar todos los checkboxes
-        cambioAceiteCheck.configure(state="disabled")
-        filtroAceiteCheck.configure(state="disabled")
-        filtroAireCheck.configure(state="disabled")
-        filtroCombCheck.configure(state="disabled")
-        filtroHabCheck.configure(state="disabled")
-         
-        if itemSeleccionado: 
-            # Obtener los valores de las columnas del elemento seleccionado
-            values = tree.item(itemSeleccionado)['values']
-            print(f"Valores de la tabla:{values}")  # Imprime los valores
-
+            if len(tags) >= 3:
+                id_general = tags[0]
+                id_servicio = tags[2]
+                print(f'id general: {id_general}, id serv: {id_servicio}')
+            else:
+                print("Error: tags no contienen suficientes elementos.")
+                return  # Salir de la función si no se pueden acceder a los tags necesarios
+            
+            #  Deshabilitar todos los checkboxes
+            textBoxPatente.configure(state='disabled')
+            cambioAceiteCheck.configure(state="disabled")
+            filtroAceiteCheck.configure(state="disabled")
+            filtroAireCheck.configure(state="disabled")
+            filtroCombCheck.configure(state="disabled")
+            filtroHabCheck.configure(state="disabled")
+            
             textBoxPatente.delete(0, END)
-            textBoxPatente.insert(0,values[0])
             textBoxKM.delete(0, END)
-            textBoxKM.insert(0,values[1])
+            textBoxCambioAceite.delete(0, END)
+            textBoxFiltroAceite.delete(0, END)
+            textBoxFiltroAire.delete(0, END)
+            textBoxFiltroComb.delete(0, END)
+            textBoxFiltroHab.delete(0, END)
+            textBoxObservaciones.delete(0, END)
+            # Desmarcar los Checkbuttons
+            varCambioAceite.set(0)
+            varFiltroAceite.set(0)
+            varFiltroAire.set(0)
+            varFiltroComb.set(0)
+            varFiltroHab.set(0)
+
+
+            #self.limpiarCampos()
             
-            # Verificar cada servicio y habilitar solo los correspondientes
-            if "Cambio de aceite" in values[3]:
-                varCambioAceite.set(1)
+            if itemSeleccionado: 
+                # Obtener los valores de las columnas del elemento seleccionado
+                values = tree.item(itemSeleccionado)['values']
+                print(f"Valores de la tabla:{values}")  # Imprime los valores
+
+                textBoxPatente.delete(0, END)
+                textBoxPatente.insert(0,values[0])
+                textBoxKM.delete(0, END)
+                textBoxKM.insert(0,values[1])
+                
+                # Verificar cada servicio y habilitar solo los correspondientes
+                if "Cambio de aceite" in values[3]:
+                    varCambioAceite.set(1)
+                    habilitar_entry(varCambioAceite, textBoxCambioAceite)
+                    textBoxCambioAceite.insert(0, values[4])
+                
+                if "Filtro de aceite" in values[3]:
+                    varFiltroAceite.set(1)
+                    habilitar_entry(varFiltroAceite, textBoxFiltroAceite)
+                    textBoxFiltroAceite.insert(0, values[4])
+                
+                if "Filtro de aire" in values[3]:
+                    varFiltroAire.set(1)
+                    habilitar_entry(varFiltroAire, textBoxFiltroAire)
+                    textBoxFiltroAire.insert(0, values[4])
+                
+                if "Filtro de combustible" in values[3]:
+                    varFiltroComb.set(1)
+                    habilitar_entry(varFiltroComb, textBoxFiltroComb)
+                    textBoxFiltroComb.insert(0, values[4])
+                
+                if "Filtro de habitaculo" in values[3]:
+                    varFiltroHab.set(1)
+                    habilitar_entry(varFiltroHab, textBoxFiltroHab)
+                    textBoxFiltroHab.insert(0, values[4])
+
+                textBoxObservaciones.configure(state="normal")
+                textBoxObservaciones.insert(0, values[6])
+            else:
+                print("No se seleccionó ningún elemento.")
+        except ValueError as error:
+            print(f"Error al seleccionar registros:{error}")
+
+    def modificarRegistros(self):
+        global encontrada
+        
+        try:
+            patente_ingresada = textBoxPatente.get().strip()  
+
+            # Validación de los KMs
+            km_text = textBoxKM.get().strip()  # Eliminar espacios extra
+            if not km_text:
+                messagebox.showinfo("Error de datos", "Debe ingresar los KMs.")
+                return
+            if not km_text.isdigit():
+                messagebox.showinfo("Error de datos", "Los KMs deben contener solo números.")
+                return
+
+            # Convertir a entero después de validar
+            km_ingresados = int(km_text)
+
+            # Verificar que los KMs no sean menores a los ya registrados
+            data = CBuscador.buscarPorPatente(patente_ingresada)
+            for cliente in data:
+                kms_registrados = cliente[3]  # Suponiendo que cliente[3] almacena los KMs registrados
+                if kms_registrados > km_ingresados:
+                    messagebox.showwarning("Advertencia", "Los KMs ingresados no pueden ser menores a los KMs registrados para esta patente.")
+                    return  # Salir si los KMs son menores
+
+            # Si todo es válido, asignar a km_actual
+            km_actual = km_ingresados  # Esto solo se ejecuta si pasa todas las validaciones
+
+            observaciones = textBoxObservaciones.get()
+
+            if varCambioAceite.get():
                 habilitar_entry(varCambioAceite, textBoxCambioAceite)
-                textBoxCambioAceite.insert(0, values[4])
-            
-            if "Filtro de aceite" in values[3]:
-                varFiltroAceite.set(1)
+                detalles= textBoxCambioAceite.get()
+            if varFiltroAceite.get():
                 habilitar_entry(varFiltroAceite, textBoxFiltroAceite)
-                textBoxFiltroAceite.insert(0, values[4])
-            
-            if "Filtro de aire" in values[3]:
-                varFiltroAire.set(1)
+                detalles= textBoxFiltroAceite.get()
+            if varFiltroAire.get():
                 habilitar_entry(varFiltroAire, textBoxFiltroAire)
-                textBoxFiltroAire.insert(0, values[4])
-            
-            if "Filtro de combustible" in values[3]:
-                varFiltroComb.set(1)
+                detalles= textBoxFiltroAire.get()
+            if varFiltroComb.get():
                 habilitar_entry(varFiltroComb, textBoxFiltroComb)
-                textBoxFiltroComb.insert(0, values[4])
-            
-            if "Filtro de habitaculo" in values[3]:
-                varFiltroHab.set(1)
+                detalles= textBoxFiltroComb.get()
+            if varFiltroHab.get():
                 habilitar_entry(varFiltroHab, textBoxFiltroHab)
-                textBoxFiltroHab.insert(0, values[4])
+                detalles= textBoxFiltroHab.get()
 
-            textBoxObservaciones.configure(state="normal")
-            textBoxObservaciones.insert(0, values[6])
-        else:
-            print("No se seleccionó ningún elemento.")
-    except ValueError as error:
-        print(f"Error al seleccionar registros:{error}")
+            CServicios.modificarServicios(km_actual,observaciones,id_general,detalles,id_servicio)
+            messagebox.showinfo("Información:", "Los datos fueron actualizados.")
 
-def modificarRegistros():
-    global textBoxPatente, textBoxKM, textBoxCambioAceite, textBoxFiltroAceite, textBoxFiltroAire, textBoxFiltroComb, textBoxFiltroHab, textBoxObservaciones,detalles
-    
-    try:
-        if textBoxPatente is None or textBoxKM is None or textBoxCambioAceite is None or textBoxFiltroAceite is None or textBoxFiltroAire is None or textBoxFiltroComb is None or textBoxFiltroHab is None or textBoxObservaciones is None:
-            print("Los widget no estan inicializados")
-            return
-        
-        kms = textBoxKM.get()
-        observaciones = textBoxObservaciones.get()
-
-        if varCambioAceite.get():
-            habilitar_entry(varCambioAceite, textBoxCambioAceite)
-            detalles= textBoxCambioAceite.get()
-        if varFiltroAceite.get():
-            habilitar_entry(varFiltroAceite, textBoxFiltroAceite)
-            detalles= textBoxFiltroAceite.get()
-        if varFiltroAire.get():
-            habilitar_entry(varFiltroAire, textBoxFiltroAire)
-            detalles= textBoxFiltroAire.get()
-        if varFiltroComb.get():
-            habilitar_entry(varFiltroComb, textBoxFiltroComb)
-            detalles= textBoxFiltroComb.get()
-        if varFiltroHab.get():
-            habilitar_entry(varFiltroHab, textBoxFiltroHab)
-            detalles= textBoxFiltroHab.get()
-
-        CServicios.modificarServicios(kms,observaciones,id_general,detalles,id_servicio)
-        messagebox.showinfo("Información:", "Los datos fueron actualizados.")
-
-        actualizarTreeView()
-        limpiarCampos()
-
-    except ValueError as error:
-        print("Error al actualizar los datos{}".format(error))
-
-def actualizarTreeView():
-    global tree
-
-    try:
-        tree.delete(*tree.get_children())
-
-        for row in CServicios.mostrarServiciosRealizados():
-            tags = row[0],row[8],row[9]
-            tree.insert("", "end", values=row[1:-2], tags=tags)
-        
-    except ValueError as error:
-        print("Error al actualizar tabla {}".format(error))
-
-def eliminarRegistros():
-    global id_servicio
-    try:
-        CServicios.eliminarServicios(id_servicio)
-        messagebox.showinfo("Información:", "Los datos fueron eliminados.")
-
-        actualizarTreeView()
-        limpiarCampos()
-    except ValueError as error:
-        print("Error al actualizar los datos{}".format(error))
+            self.actualizarTreeView()
+            self.limpiarCampos()
 
 
-def limpiarCampos():
-    # Limpiar los campos de detalles de los servicios
-    textBoxPatente.delete(0, END)
-    textBoxKM.delete(0, END)
-    textBoxCambioAceite.delete(0, END)
-    textBoxFiltroAceite.delete(0, END)
-    textBoxFiltroAire.delete(0, END)
-    textBoxFiltroComb.delete(0, END)
-    textBoxFiltroHab.delete(0, END)
-    textBoxObservaciones.delete(0, END)
-    # Desmarcar los Checkbuttons
-    varCambioAceite.set(0)
-    varFiltroAceite.set(0)
-    varFiltroAire.set(0)
-    varFiltroComb.set(0)
-    varFiltroHab.set(0)
+        except ValueError as error:
+            print("Error al actualizar los datos{}".format(error))
 
-     # Deshabilitar los Entry    
-    textBoxCambioAceite.configure(state='disabled')
-    textBoxFiltroAceite.configure(state='disabled')
-    textBoxFiltroAire.configure(state='disabled')
-    textBoxFiltroComb.configure(state='disabled')
-    textBoxFiltroHab.configure(state='disabled')
+    @classmethod
+    def actualizarTreeView(self):
+        global tree
 
-    #Habilitar checks
-    cambioAceiteCheck.configure(state="normal")
-    filtroAceiteCheck.configure(state="normal")
-    filtroAireCheck.configure(state="normal")
-    filtroCombCheck.configure(state="normal")
-    filtroHabCheck.configure(state="normal")
+        try:
+            tree.delete(*tree.get_children())
+
+            for row in CServicios.mostrarServiciosRealizados():
+                tags = row[0],row[8],row[9]
+                tree.insert("", "end", values=row[1:-2], tags=tags)
+            
+        except ValueError as error:
+            print("Error al actualizar tabla {}".format(error))
+
+    def eliminarRegistros(self):
+        global id_servicio
+        try:
+            CServicios.eliminarServicios(id_servicio)
+            messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+
+            self.actualizarTreeView()
+            self.limpiarCampos()
+        except ValueError as error:
+            print("Error al actualizar los datos{}".format(error))
+
+
+    def limpiarCampos(self):
+        # Limpiar los campos de detalles de los servicios
+        textBoxPatente.delete(0, END)
+        textBoxKM.delete(0, END)
+        textBoxCambioAceite.delete(0, END)
+        textBoxFiltroAceite.delete(0, END)
+        textBoxFiltroAire.delete(0, END)
+        textBoxFiltroComb.delete(0, END)
+        textBoxFiltroHab.delete(0, END)
+        textBoxObservaciones.delete(0, END)
+        # Desmarcar los Checkbuttons
+        varCambioAceite.set(0)
+        varFiltroAceite.set(0)
+        varFiltroAire.set(0)
+        varFiltroComb.set(0)
+        varFiltroHab.set(0)
+
+        # Deshabilitar los Entry    
+        textBoxCambioAceite.configure(state='disabled')
+        textBoxFiltroAceite.configure(state='disabled')
+        textBoxFiltroAire.configure(state='disabled')
+        textBoxFiltroComb.configure(state='disabled')
+        textBoxFiltroHab.configure(state='disabled')
+
+        #Habilitar checks
+        textBoxPatente.configure(state='normal')
+        cambioAceiteCheck.configure(state="normal")
+        filtroAceiteCheck.configure(state="normal")
+        filtroAireCheck.configure(state="normal")
+        filtroCombCheck.configure(state="normal")
+        filtroHabCheck.configure(state="normal")
 
     

@@ -49,3 +49,26 @@ class CBuscador:
         
         except mysql.connector.Error as error:
             print("Error al mostrar datos {}",format(error))
+
+    def verificarServicio(patente):
+        try:
+            cone = CConexion.ConexionBaseDeDatos()
+            cursor = cone.cursor()
+            sql_consulta = 'SELECT COUNT(*) FROM servicio_general WHERE patente = %s;'
+            valores = (patente,)
+            cursor.execute(sql_consulta, valores)
+
+            miResultado = cursor.fetchone()
+            cone.commit()
+            cone.close()
+
+            if miResultado and miResultado[0] > 0:
+                return True  # Hay servicios vinculados
+            else:
+                return False  # No hay servicios vinculados
+
+        except mysql.connector.Error as error:
+            print("Error al verificar servicios:", error)
+            return False  # En caso de error, asumimos que no hay servicios vinculados
+
+            
