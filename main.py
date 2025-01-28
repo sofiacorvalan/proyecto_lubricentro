@@ -105,6 +105,13 @@ class MainApp:
         Form1(self.tab_clientes)
     
         Form2(self.tab_servicios)  
+        
+        #Footer
+        footer = CTkFrame(root, height=30, corner_radius=0)
+        footer.pack(side="bottom", fill="x")
+
+        footer_label = CTkLabel(footer, text='Desarrollado por Sofía Corvalán ♥ corvalansofia1@gmail.com')
+        footer_label.pack()
 
     def cambiarTema(self):
         if self.switch.get():
