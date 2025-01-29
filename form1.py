@@ -62,8 +62,22 @@ class Form1:
             # Título para el Frame
             CTkLabel(groupBoxLista, text="Lista de clientes:", font=("Arial", 15, 'bold')).pack(pady=(0, 10))
 
-            # Crear un Treeview
-            tree = ttk.Treeview(groupBoxLista, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=15)
+            # Crear un Frame contenedor para el Treeview y el scrollbar
+            treeFrame = CTkFrame(groupBoxLista)
+            treeFrame.pack(fill="both", expand=True)
+
+            # Crear el scrollbar
+            treeScrollbar = ttk.Scrollbar(treeFrame, orient="vertical")
+            treeScrollbar.pack(side="right", fill="y")
+
+            # Crear el Treeview
+            tree = ttk.Treeview(treeFrame, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=15, yscrollcommand=treeScrollbar.set)
+            tree.pack(side="left", fill="both", expand=True)
+
+            # Configurar el scrollbar para que controle el Treeview
+            treeScrollbar.config(command=tree.yview)
+
+            # Configurar columnas y encabezados del Treeview
             tree.column("#1", anchor=CENTER, width=150)
             tree.heading("#1", text="Nombre y Apellido")
             tree.column("#2", anchor=CENTER, width=150)
@@ -77,10 +91,9 @@ class Form1:
             for row in CClientes.mostrarClientes():
                 tree.insert("", "end", values=row[1:], tags=(row[0],))
 
+            # Configurar evento para selección en el Treeview
             tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
-            tree.pack(pady=5)
-
-
+            
         except ValueError as error:
             print(f"Error al mostrar la interfaz, error: {error}")
 

@@ -15,11 +15,11 @@ class MainApp:
         "Nombre y Apellido": 150,
         "Patente": 90,
         "Vehículo": 150,
-        "KMs": 90,
-        "Próx. Servicio": 100,
+        "KMs": 85,
+        "Próx. Servicio": 120,
         "Servicio": 150,
-        "Detalles": 20,
-        "Fecha": 90,
+        "Detalles": 200,
+        "Fecha": 85,
         "Observaciones": 350
     }
 
@@ -81,6 +81,8 @@ class MainApp:
     
         CTkButton(frame3, text='Buscar', width=85, command=self.buscadorCliente).pack(side='left', pady=5)
 
+        CTkButton(self.tab_inicio, text="Ver todos los servicios del día", command=self.verServiciosDiarios).pack(pady=5)
+
         #Estilizar los treeView
         style = ttk.Style()
         style.theme_use('clam')
@@ -126,6 +128,28 @@ class MainApp:
             self.tree.destroy()
             self.tree = None
 
+    def verServiciosDiarios(self):
+        try:
+            self.destroy_treeview()
+            resultados = CBuscador.mostrarServiciosDiarios()
+            print(f"Resultado de búsqueda: {resultados}")
+
+            if not resultados:
+                messagebox.showinfo("Sin resultados", "No hay servicios registrados el día de hoy.")
+            else:
+                self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)  
+
+                for i, column in enumerate(self.tree["columns"]):
+                    width = self.column_widths.get(column, 150)  
+                    self.tree.column(f"#{i+1}", anchor="center", width=width)
+                    self.tree.heading(f"#{i+1}", text=column)
+
+                self.tree.pack(side='left', fill='both', expand=True)
+                self.actualizarTreeView(resultados)
+
+        except ValueError as error:
+            print(f'Error al mostrar servicios diarios{error}')
+    
     def buscadorPatente(self):
         try:
             self.destroy_treeview()
@@ -141,7 +165,7 @@ class MainApp:
                 if not resultados_patente:
                     messagebox.showinfo("Sin resultados", "No hay servicios registrados para esta patente")
                 else:
-                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings')  
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)  
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  
@@ -171,8 +195,8 @@ class MainApp:
                 if not resultados_vehiculo:
                     messagebox.showinfo("Sin resultados", "Este modelo de vehiculo no tiene servicios registrados.")
                 else:       
-                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)  
-
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
+                      
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  
                         self.tree.column(f"#{i+1}", anchor="center", width=width)
@@ -204,7 +228,7 @@ class MainApp:
                 if not resultados_cliente:
                     messagebox.showinfo("Sin resultados", "No hay servicios registrados a nombre del cliente.")
                 else:
-                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=15)
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  # Usar un valor predeterminado si no está en el diccionario

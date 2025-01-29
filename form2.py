@@ -11,10 +11,6 @@ from buscador import *
 class Form2:
 
     def __init__(self, root):
-
-        global ancho_entry, ancho_columnas
-        ancho_entry = 25
-        ancho_columnas = 140
         
         global textBoxPatente, textBoxKM, textBoxCambioAceite, textBoxFiltroAceite, textBoxFiltroAire
         global textBoxFiltroComb, textBoxFiltroHab, textBoxObservaciones
@@ -110,27 +106,26 @@ class Form2:
             groupBoxTabla.grid_rowconfigure(0, weight=1)
             groupBoxTabla.grid_columnconfigure(0, weight=1)
 
-            tree.column("# 1", anchor=CENTER, width=100)
+            tree.column("# 1", anchor=CENTER, width=90)
             tree.heading("# 1", text="Patente")
-            tree.column("# 2", anchor=CENTER, width=100)
+            tree.column("# 2", anchor=CENTER, width=85)
             tree.heading("# 2", text="KMs")
-            tree.column("# 3", anchor=CENTER, width=100)
+            tree.column("# 3", anchor=CENTER, width=150)
             tree.heading("# 3", text="Vehículo")
-            tree.column("# 4", anchor=CENTER, width=ancho_columnas)
+            tree.column("# 4", anchor=CENTER, width=150)
             tree.heading("# 4", text="Servicio")
-            tree.column("# 5", anchor=CENTER, width=ancho_columnas)
+            tree.column("# 5", anchor=CENTER, width=200)
             tree.heading("# 5", text="Detalles")
-            tree.column("# 6", anchor=CENTER, width=100)
+            tree.column("# 6", anchor=CENTER, width=85)
             tree.heading("# 6", text="Fecha")
-            tree.column("# 7", anchor=CENTER, width=100)
+            tree.column("# 7", anchor=CENTER, width=200)
             tree.heading("# 7", text="Observaciones")
                         
             for row in CServicios.mostrarServiciosRealizados():
                 tags = (row[0], row[8], row[9])
                 tree.insert("", "end", values=row[1:-2], tags=tags)
-               
+            
             tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
-            #tree.pack()
 
         except ValueError as error:
             print("Error al actualizar los datos{}".format(error))
@@ -187,15 +182,15 @@ class Form2:
             # Crear una lista de servicios seleccionados
             servicios = []
             if varCambioAceite.get():
-                servicios.append((1, textBoxCambioAceite.get()))
+                servicios.append((1, textBoxCambioAceite.get().title()))
             if varFiltroAceite.get():
-                servicios.append((2, textBoxFiltroAceite.get()))
+                servicios.append((2, textBoxFiltroAceite.get().title()))
             if varFiltroAire.get():
-                servicios.append((3, textBoxFiltroAire.get()))
+                servicios.append((3, textBoxFiltroAire.get().title()))
             if varFiltroComb.get():
-                servicios.append((4, textBoxFiltroComb.get()))
+                servicios.append((4, textBoxFiltroComb.get().title()))
             if varFiltroHab.get():
-                servicios.append((5, textBoxFiltroHab.get()))
+                servicios.append((5, textBoxFiltroHab.get().title()))
 
             print(f"Servicios seleccionados: {servicios}")
 
