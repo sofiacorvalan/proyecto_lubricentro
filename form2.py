@@ -140,11 +140,11 @@ class Form2:
         try:
             # Obtener valores del formulario
             fecha = date.today()
-            observaciones = textBoxObservaciones.get()
+            observaciones = textBoxObservaciones.get().capitalize()
 
             # Verificar si la patente está en los datos
             datos = CClientes.mostrarClientes()
-            patente_ingresada = textBoxPatente.get().strip()  # Eliminar espacios extra
+            patente_ingresada = textBoxPatente.get().strip().upper()  # Eliminar espacios extra
             encontrada = False
 
             # Validación de la patente
@@ -261,15 +261,11 @@ class Form2:
             varFiltroAire.set(0)
             varFiltroComb.set(0)
             varFiltroHab.set(0)
-
-
-            #self.limpiarCampos()
             
             if itemSeleccionado: 
                 # Obtener los valores de las columnas del elemento seleccionado
                 values = tree.item(itemSeleccionado)['values']
-                print(f"Valores de la tabla:{values}")  # Imprime los valores
-
+                
                 textBoxPatente.delete(0, END)
                 textBoxPatente.insert(0,values[0])
                 textBoxKM.delete(0, END)
@@ -312,7 +308,7 @@ class Form2:
         global encontrada
         
         try:
-            patente_ingresada = textBoxPatente.get().strip()  
+            patente_ingresada = textBoxPatente.get().strip().upper()  
 
             # Validación de los KMs
             km_text = textBoxKM.get().strip()  # Eliminar espacios extra
@@ -337,23 +333,23 @@ class Form2:
             # Si todo es válido, asignar a km_actual
             km_actual = km_ingresados  # Esto solo se ejecuta si pasa todas las validaciones
 
-            observaciones = textBoxObservaciones.get()
+            observaciones = textBoxObservaciones.get().capitalize()
 
             if varCambioAceite.get():
                 habilitar_entry(varCambioAceite, textBoxCambioAceite)
-                detalles= textBoxCambioAceite.get()
+                detalles= textBoxCambioAceite.get().title()
             if varFiltroAceite.get():
                 habilitar_entry(varFiltroAceite, textBoxFiltroAceite)
-                detalles= textBoxFiltroAceite.get()
+                detalles= textBoxFiltroAceite.get().title()
             if varFiltroAire.get():
                 habilitar_entry(varFiltroAire, textBoxFiltroAire)
-                detalles= textBoxFiltroAire.get()
+                detalles= textBoxFiltroAire.get().title()
             if varFiltroComb.get():
                 habilitar_entry(varFiltroComb, textBoxFiltroComb)
-                detalles= textBoxFiltroComb.get()
+                detalles= textBoxFiltroComb.get().title()
             if varFiltroHab.get():
                 habilitar_entry(varFiltroHab, textBoxFiltroHab)
-                detalles= textBoxFiltroHab.get()
+                detalles= textBoxFiltroHab.get().title()
 
             CServicios.modificarServicios(km_actual,observaciones,id_general,detalles,id_servicio)
             messagebox.showinfo("Información:", "Los datos fueron actualizados.")
@@ -382,11 +378,17 @@ class Form2:
     def eliminarRegistros(self):
         global id_servicio
         try:
-            CServicios.eliminarServicios(id_servicio)
-            messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+            respuesta = messagebox.askquestion(
+            "ELIMINAR",
+            "¿Está seguro que desea eliminar este servicio?",
+            icon="warning")
 
-            self.actualizarTreeView()
-            self.limpiarCampos()
+            if respuesta == "yes":
+                CServicios.eliminarServicios(id_servicio)
+                messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+                self.actualizarTreeView()
+                self.limpiarCampos()
+
         except ValueError as error:
             print("Error al actualizar los datos{}".format(error))
 

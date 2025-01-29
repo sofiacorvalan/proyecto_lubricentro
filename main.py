@@ -16,9 +16,9 @@ class MainApp:
         "Patente": 90,
         "Vehículo": 150,
         "KMs": 90,
-        "Próx. Servicio": 90,
+        "Próx. Servicio": 100,
         "Servicio": 150,
-        "Detalles": 250,
+        "Detalles": 20,
         "Fecha": 90,
         "Observaciones": 350
     }
@@ -129,7 +129,7 @@ class MainApp:
     def buscadorPatente(self):
         try:
             self.destroy_treeview()
-            patente = self.caja_buscar_patente.get() 
+            patente = self.caja_buscar_patente.get().upper() 
             print(f"Buscando patente: {patente}")
 
             if not patente:
@@ -159,7 +159,7 @@ class MainApp:
     def buscadorVehiculo(self):
         try:
             self.destroy_treeview()       
-            vehiculo = self.caja_buscar_vehiculo.get()
+            vehiculo = self.caja_buscar_vehiculo.get().upper()
             print(f'vehiculo:{vehiculo}')
 
             if not vehiculo:
@@ -191,7 +191,7 @@ class MainApp:
             self.destroy_treeview()
 
             # Obtener los valores de las cajas de búsqueda
-            cliente = self.caja_buscar_cliente.get()
+            cliente = self.caja_buscar_cliente.get().title()
             print(f'cliente: {cliente}')
             
             # Si no hay resultados, mostrar el mensaje

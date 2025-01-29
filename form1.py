@@ -17,50 +17,60 @@ class Form1:
         try:
             # Crear el Frame para los datos del cliente
             groupBoxCliente = CTkFrame(root, corner_radius=10)
-            groupBoxCliente.grid(row=0, column=0, padx=10, pady=10, sticky="nw")
+            groupBoxCliente.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+
+            # Configurar las columnas del Frame para que se ajusten automáticamente
+            groupBoxCliente.grid_columnconfigure(0, weight=1, minsize=150)
+            groupBoxCliente.grid_columnconfigure(1, weight=2, minsize=250)
 
             # Título para el Frame
-            CTkLabel(groupBoxCliente, text="Datos del cliente:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=(0, 10))
+            CTkLabel(groupBoxCliente, text="Datos del cliente:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=(0, 15), sticky="n")
 
             # Campos de entrada para los datos
-            CTkLabel(groupBoxCliente, text="Nombre:", font=("Arial", 13)).grid(row=1, column=0, sticky="w", padx=10, pady=5)
-            textBoxFullName = CTkEntry(groupBoxCliente, width=200)
+            CTkLabel(groupBoxCliente, text="Nombre:", font=("Arial", 13)).grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+            textBoxFullName = CTkEntry(groupBoxCliente, width=250)
             textBoxFullName.grid(row=1, column=1, padx=10, pady=5)
 
-            CTkLabel(groupBoxCliente, text="Teléfono:", font=("Arial", 13)).grid(row=2, column=0, sticky="w", padx=10, pady=5)
-            textBoxPhone = CTkEntry(groupBoxCliente, width=200)
+            CTkLabel(groupBoxCliente, text="Teléfono:", font=("Arial", 13)).grid(row=2, column=0, sticky="nsew", padx=10, pady=5)
+            textBoxPhone = CTkEntry(groupBoxCliente, width=250)
             textBoxPhone.grid(row=2, column=1, padx=10, pady=5)
 
-            CTkLabel(groupBoxCliente, text="Patente:", font=("Arial", 13)).grid(row=3, column=0, sticky="w", padx=10, pady=5)
-            textBoxPatente = CTkEntry(groupBoxCliente, width=200)
+            CTkLabel(groupBoxCliente, text="Patente:", font=("Arial", 13)).grid(row=3, column=0, sticky="nsew", padx=10, pady=5)
+            textBoxPatente = CTkEntry(groupBoxCliente, width=250)
             textBoxPatente.grid(row=3, column=1, padx=10, pady=5)
 
-            CTkLabel(groupBoxCliente, text="Vehículo:", font=("Arial", 13)).grid(row=4, column=0, sticky="w", padx=10, pady=5)
-            textBoxVehicle = CTkEntry(groupBoxCliente, width=200)
+            CTkLabel(groupBoxCliente, text="Vehículo:", font=("Arial", 13)).grid(row=4, column=0, sticky="nsew", padx=10, pady=5)
+            textBoxVehicle = CTkEntry(groupBoxCliente, width=250)
             textBoxVehicle.grid(row=4, column=1, padx=10, pady=5)
 
-            # Botones para acciones
-            CTkButton(groupBoxCliente, text="Guardar", command=self.guardarRegistros).grid(row=5, column=0, pady=10, padx=5)
-            CTkButton(groupBoxCliente, text="Modificar", command=self.modificarRegistros).grid(row=5, column=1, pady=10, padx=5)
-            CTkButton(groupBoxCliente, text="Eliminar", command=self.eliminarRegistros).grid(row=6, column=0, pady=10, padx=5)
-            CTkButton(groupBoxCliente, text="Limpiar", command=self.limpiarCampos).grid(row=6, column=1, pady=10, padx=5)
+            # Botones para acciones (sin expansión horizontal)
+            CTkButton(groupBoxCliente, text="Guardar", command=self.guardarRegistros, width=100).grid(row=5, column=0, pady=5, padx=5)
+            CTkButton(groupBoxCliente, text="Modificar", command=self.modificarRegistros, width=100).grid(row=5, column=1, pady=5, padx=5)
+            CTkButton(groupBoxCliente, text="Eliminar", command=self.eliminarRegistros, width=100).grid(row=6, column=0, pady=5, padx=5)
+            CTkButton(groupBoxCliente, text="Limpiar", command=self.limpiarCampos, width=100).grid(row=6, column=1, pady=5, padx=5)
+
 
             # Crear el Frame para la lista de clientes
             groupBoxLista = CTkFrame(root, corner_radius=10)
-            groupBoxLista.grid(row=0, column=1, padx=10, pady=10, sticky="ne")
+            groupBoxLista.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+
+            # Configurar las columnas del Frame principal para ajustar el espacio disponible
+            root.grid_columnconfigure(0, weight=1)
+            root.grid_columnconfigure(1, weight=1)
+            root.grid_rowconfigure(0, weight=1)
 
             # Título para el Frame
-            CTkLabel(groupBoxLista, text="Lista de clientes:", font=("Arial", 15, 'bold') ).pack(pady=(0, 10))
+            CTkLabel(groupBoxLista, text="Lista de clientes:", font=("Arial", 15, 'bold')).pack(pady=(0, 10))
 
             # Crear un Treeview
             tree = ttk.Treeview(groupBoxLista, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=15)
-            tree.column("#1", anchor=CENTER, width=ancho)
+            tree.column("#1", anchor=CENTER, width=150)
             tree.heading("#1", text="Nombre y Apellido")
-            tree.column("#2", anchor=CENTER, width=ancho)
+            tree.column("#2", anchor=CENTER, width=150)
             tree.heading("#2", text="Teléfono")
-            tree.column("#3", anchor=CENTER, width=ancho)
+            tree.column("#3", anchor=CENTER, width=100)
             tree.heading("#3", text="Patente")
-            tree.column("#4", anchor=CENTER, width=200)
+            tree.column("#4", anchor=CENTER, width=150)
             tree.heading("#4", text="Vehículo")
 
             # Insertar datos en el Treeview (simulación)
@@ -69,6 +79,7 @@ class Form1:
 
             tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
             tree.pack(pady=5)
+
 
         except ValueError as error:
             print(f"Error al mostrar la interfaz, error: {error}")
@@ -87,7 +98,7 @@ class Form1:
                 messagebox.showinfo("Error de datos", "El nombre completo debe tener al menos 2 caracteres.")
                 return
             else: 
-                nombre_completo = textBoxFullName.get()
+                nombre_completo = textBoxFullName.get().title()
 
             # Validar teléfono
             if not textBoxPhone.get().isdigit():  # Verificar que sean solo números
@@ -107,14 +118,14 @@ class Form1:
                 messagebox.showinfo("Error de datos", "La patente ya está registrada.")
                 return
             else:
-                patente = textBoxPatente.get()
+                patente = textBoxPatente.get().upper()
 
             # Validar vehículo
             if len(textBoxVehicle.get().strip()) < 3:  # Nombre del vehículo demasiado corto
                 messagebox.showinfo("Error de datos", "El nombre del vehículo debe tener al menos 3 caracteres.")
                 return
             else:
-                vehiculo = textBoxVehicle.get()
+                vehiculo = textBoxVehicle.get().upper()
 
 
             CClientes.ingresarClientes(nombre_completo, telefono, patente, vehiculo)
@@ -185,7 +196,7 @@ class Form1:
             if len(textBoxFullName.get()) < 2:  
                 messagebox.showinfo("Error de datos", "El nombre completo debe tener al menos 2 caracteres.")
                 return
-            nombre_completo = textBoxFullName.get()
+            nombre_completo = textBoxFullName.get().title()
 
             # Validación del teléfono
             if not textBoxPhone.get().isdigit(): 
@@ -218,7 +229,7 @@ class Form1:
                     patente = datos_cliente[3]  # Mantener la patente actual
                 else:
                     print("La patente no tiene servicios vinculados.")
-                    patente = textBoxPatente.get()  # Usar la nueva patente si no tiene servicios vinculados
+                    patente = textBoxPatente.get().upper() 
             else:
                 # Si la patente no cambia, mantener la patente actual
                 patente = datos_cliente[3]
@@ -227,13 +238,14 @@ class Form1:
             if len(textBoxVehicle.get().strip()) < 3:  
                 messagebox.showinfo("Error de datos", "El nombre del vehículo debe tener al menos 3 caracteres.")
                 return
-            vehiculo = textBoxVehicle.get()
+            vehiculo = textBoxVehicle.get().upper()
 
             # Actualización de los datos del cliente
             CClientes.modificarClientes(id_seleccionado, nombre_completo, telefono, patente, vehiculo)
             messagebox.showinfo("Información:", "Los datos fueron actualizados.")
 
             self.actualizarTreeView()
+            Form2.actualizarTreeView()
             self.limpiarCampos()
 
         except ValueError as error:
@@ -244,7 +256,6 @@ class Form1:
         global id_seleccionado
 
         try:
-            
             respuesta = messagebox.askquestion(
             "¿Está seguro que desea eliminar?",
             "Se eliminará el cliente y todos los servicios vinculados a esta patente.",
