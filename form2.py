@@ -12,7 +12,7 @@ class Form2:
 
     def __init__(self, root):
         
-        global textBoxPatente, textBoxKM, textBoxCambioAceite, textBoxFiltroAceite, textBoxFiltroAire
+        global textBoxPatente, textBoxKM, textBoxCambioAceite, textBoxFiltroAceite, textBoxFiltroAire, textBoxBuscarPatente
         global textBoxFiltroComb, textBoxFiltroHab, textBoxObservaciones
         global varCambioAceite, varFiltroAceite, varFiltroAire, varFiltroComb, varFiltroHab,tree, habilitar_entry
         global cambioAceiteCheck ,filtroAceiteCheck,filtroAireCheck, filtroCombCheck, filtroHabCheck
@@ -29,20 +29,22 @@ class Form2:
         try:
             # Frame principal
             groupBox = CTkFrame(root, corner_radius=10)
-            groupBox.grid(row=0, column=0, padx=10, pady=10, sticky='nw')
-
-            # Título para el Frame
-            CTkLabel(groupBox, text="Ingresa los datos:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=(0, 10))
+            groupBox.pack(padx=5)
 
             # Patente
-            CTkLabel(groupBox, text="Patente:", font=("Arial", 13)).grid(row=1, column=0, sticky="w", padx=10, pady=5)
+            CTkLabel(groupBox, text="Patente:", font=("Arial", 13)).grid(row=0, column=0, sticky="w", padx=10, pady=5)
             textBoxPatente = CTkEntry(groupBox, width=200)
-            textBoxPatente.grid(row=1, column=1, padx=10, pady=5)
+            textBoxPatente.grid(row=0, column=1, padx=10, pady=5)
 
             # Kilómetros
-            CTkLabel(groupBox, text="Kilómetros:", font=("Arial", 13)).grid(row=2, column=0, sticky='w', padx=10, pady=5)
+            CTkLabel(groupBox, text="Kilómetros:", font=("Arial", 13)).grid(row=1, column=0, sticky='w', padx=10, pady=5)
             textBoxKM = CTkEntry(groupBox, width=200)
-            textBoxKM.grid(row=2, column=1, padx=10, pady=5)
+            textBoxKM.grid(row=1, column=1, padx=10, pady=5)
+
+            # Observaciones
+            CTkLabel(groupBox, text="Observaciones:", font=("Arial", 13)).grid(row=2, column=0, sticky='w', padx=10, pady=5)
+            textBoxObservaciones = CTkEntry(groupBox, width=200)
+            textBoxObservaciones.grid(row=2, column=1, padx=10, pady=5)
 
             # Cambio de aceite
             varCambioAceite = IntVar()
@@ -55,56 +57,61 @@ class Form2:
             # Filtro de aceite
             varFiltroAceite = IntVar()
             filtroAceiteCheck = CTkCheckBox(groupBox, text="Filtro de aceite", variable=varFiltroAceite, command=lambda: habilitar_entry(varFiltroAceite, textBoxFiltroAceite))
-            filtroAceiteCheck.grid(row=4, column=0, sticky='w', padx=10, pady=5)
+            filtroAceiteCheck.grid(row=0, column=2, sticky='w', padx=10, pady=5)
             textBoxFiltroAceite = CTkEntry(groupBox, width=200)
-            textBoxFiltroAceite.grid(row=4, column=1, padx=10, pady=5)
+            textBoxFiltroAceite.grid(row=0, column=3, padx=10, pady=5)
             textBoxFiltroAceite.configure(state="disabled")
 
             # Filtro de aire
             varFiltroAire = IntVar()
             filtroAireCheck = CTkCheckBox(groupBox, text="Filtro de aire", variable=varFiltroAire, command=lambda: habilitar_entry(varFiltroAire, textBoxFiltroAire))
-            filtroAireCheck.grid(row=5, column=0, sticky='w', padx=10, pady=5)
+            filtroAireCheck.grid(row=1, column=2, sticky='w', padx=10, pady=5)
             textBoxFiltroAire = CTkEntry(groupBox, width=200)
-            textBoxFiltroAire.grid(row=5, column=1, padx=10, pady=5)
+            textBoxFiltroAire.grid(row=1, column=3, padx=10, pady=5)
             textBoxFiltroAire.configure(state="disabled")
 
             # Filtro de combustible
             varFiltroComb = IntVar()
             filtroCombCheck = CTkCheckBox(groupBox, text="Filtro de combustible", variable=varFiltroComb, command=lambda: habilitar_entry(varFiltroComb, textBoxFiltroComb))
-            filtroCombCheck.grid(row=6, column=0, sticky='w', padx=10, pady=5)
+            filtroCombCheck.grid(row=2, column=2, sticky='w', padx=10, pady=5)
             textBoxFiltroComb = CTkEntry(groupBox, width=200)
-            textBoxFiltroComb.grid(row=6, column=1, padx=10, pady=5)
+            textBoxFiltroComb.grid(row=2, column=3, padx=10, pady=5)
             textBoxFiltroComb.configure(state="disabled")
 
             # Filtro de habitáculo
             varFiltroHab = IntVar()
             filtroHabCheck = CTkCheckBox(groupBox, text="Filtro de habitáculo", variable=varFiltroHab, command=lambda: habilitar_entry(varFiltroHab, textBoxFiltroHab))
-            filtroHabCheck.grid(row=7, column=0, sticky='w', padx=10, pady=5)
+            filtroHabCheck.grid(row=3, column=2, sticky='w', padx=10, pady=5)
             textBoxFiltroHab = CTkEntry(groupBox, width=200)
-            textBoxFiltroHab.grid(row=7, column=1, padx=10, pady=5)
+            textBoxFiltroHab.grid(row=3, column=3, padx=10, pady=5)
             textBoxFiltroHab.configure(state="disabled")
 
-            # Observaciones
-            CTkLabel(groupBox, text="Observaciones:", font=("Arial", 13)).grid(row=8, column=0, sticky='w', padx=10, pady=5)
-            textBoxObservaciones = CTkEntry(groupBox, width=200)
-            textBoxObservaciones.grid(row=8, column=1, padx=10, pady=5)
+            frameBotones = CTkFrame(root,corner_radius=10)
+            frameBotones.pack(pady=5)
 
             # Botones
-            CTkButton(groupBox, text="Guardar", command=self.guardarRegistros).grid(row=9, column=0, pady=10, padx=5)
-            CTkButton(groupBox, text="Modificar", command=self.modificarRegistros).grid(row=9, column=1, pady=10, padx=5)
-            CTkButton(groupBox, text="Eliminar", command=self.eliminarRegistros).grid(row=10, column=0, pady=10, padx=5)
-            CTkButton(groupBox, text="Limpiar", command=self.limpiarCampos).grid(row=10, column=1, pady=10, padx=5)
+            CTkButton(frameBotones, text="Guardar", fg_color='#8AC859', command=self.guardarRegistros).grid(row=0, column=0, pady=10, padx=5)
+            CTkButton(frameBotones, text="Modificar", fg_color='#BBCD5F', command=self.modificarRegistros).grid(row=0, column=1, pady=10, padx=5)
+            CTkButton(frameBotones, text="Eliminar", fg_color='#E05349', command=self.eliminarRegistros).grid(row=0, column=2, pady=10, padx=5)
+            CTkButton(frameBotones, text="Limpiar", command=self.limpiarCampos).grid(row=0, column=3, pady=10, padx=5)
 
             # Tabla
             groupBoxTabla = CTkFrame(root, corner_radius=10)
-            groupBoxTabla.grid(row=0, column=1, padx=10, pady=10, sticky='nw')
+            groupBoxTabla.pack(pady=5)
 
-            CTkLabel(groupBoxTabla, text="Servicios realizados:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=10)
-            
-            tree = ttk.Treeview(groupBoxTabla, style='Custom.Treeview',columns=("Patente","KMs", "Vehículo", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=20)
-            tree.grid(row=0, column=0, sticky="nsew")  # Coloca el Treeview en la posición deseada
-            groupBoxTabla.grid_rowconfigure(0, weight=1)
-            groupBoxTabla.grid_columnconfigure(0, weight=1)
+            # Crear un Frame contenedor para el Treeview y el scrollbar
+            treeFrame = CTkFrame(groupBoxTabla)
+            treeFrame.pack(pady=5)
+
+            # Crear el scrollbar
+            treeScrollbar = ttk.Scrollbar(treeFrame, orient="vertical")
+            treeScrollbar.pack(side="right", fill="y")    
+
+            tree = ttk.Treeview(treeFrame, style='Custom.Treeview',columns=("Patente","KMs", "Vehículo", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=10,yscrollcommand=treeScrollbar.set)
+            tree.pack(side="left", fill="both", expand=True)
+
+            # Configurar el scrollbar para que controle el Treeview
+            treeScrollbar.config(command=tree.yview)
 
             tree.column("# 1", anchor=CENTER, width=90)
             tree.heading("# 1", text="Patente")
@@ -114,11 +121,11 @@ class Form2:
             tree.heading("# 3", text="Vehículo")
             tree.column("# 4", anchor=CENTER, width=150)
             tree.heading("# 4", text="Servicio")
-            tree.column("# 5", anchor=CENTER, width=200)
+            tree.column("# 5", anchor=CENTER, width=220)
             tree.heading("# 5", text="Detalles")
             tree.column("# 6", anchor=CENTER, width=85)
             tree.heading("# 6", text="Fecha")
-            tree.column("# 7", anchor=CENTER, width=200)
+            tree.column("# 7", anchor=CENTER, width=250)
             tree.heading("# 7", text="Observaciones")
                         
             for row in CServicios.mostrarServiciosRealizados():
@@ -126,6 +133,17 @@ class Form2:
                 tree.insert("", "end", values=row[1:-2], tags=tags)
             
             tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
+            
+            #Frame para buscar
+            groupBoxBuscar = CTkFrame(root, corner_radius=10)
+            groupBoxBuscar.pack(pady=5)
+
+            CTkLabel(groupBoxBuscar, text="Patente:", font=("Arial", 13)).grid(row=0, column=0, sticky="w", padx=10, pady=5)
+            textBoxBuscarPatente = CTkEntry(groupBoxBuscar, width=300)
+            textBoxBuscarPatente.grid(row=0, column=1, pady=5, padx=5)
+            CTkButton(groupBoxBuscar, text='Buscar', command=self.buscarPatente).grid(row=0, column=2, pady=5, padx=5)
+            CTkButton(groupBoxBuscar,text='Hoy', command=self.buscarFecha).grid(row=0,column=3, pady=5, padx=5)
+            CTkButton(groupBoxBuscar, text='Todos', command=self.actualizarTreeView).grid(row=0, column=4, pady=5, padx=5)
 
         except ValueError as error:
             print("Error al actualizar los datos{}".format(error))
@@ -419,5 +437,54 @@ class Form2:
         filtroAireCheck.configure(state="normal")
         filtroCombCheck.configure(state="normal")
         filtroHabCheck.configure(state="normal")
+
+    def buscarPatente(self):
+        try:
+            tree.delete(*tree.get_children())
+
+            # Obtener y limpiar la patente
+            patente = textBoxBuscarPatente.get().strip().upper()
+
+            # Verificar si está vacía
+            if not patente:
+                messagebox.showinfo("Información", "Ingrese una patente")
+                return  # Detener la ejecución si no se ingresó una patente
+
+            # Buscar clientes
+            datos = CServicios.buscarPatente(patente)
+            print(f'DATOS servicios: {datos}')
+
+            if datos:
+                for row in datos:
+                    tags = (row[0], row[8], row[9])  # Asegurar que sea una tupla
+                    tree.insert("", "end", values=row[1:-2], tags=tags)
+            else: 
+                messagebox.showinfo("Información", "No hay servicios registrados para esa patente.")
+
+            self.limpiarCampos()
+        
+        except Exception as error:
+            print(f"Error al buscar la patente: {error}")
+
+
+    def buscarFecha(self):
+        try:
+            tree.delete(*tree.get_children())
+
+            # Buscar clientes
+            datos = CServicios.buscarFecha()
+            print(f'DATOS servicios: {datos}')
+
+            if datos:
+                for row in datos:
+                    tags = row[0],row[8],row[9]
+                    tree.insert("", "end", values=row[1:-2], tags=tags)
+
+            else: 
+                messagebox.showinfo("Información", "No se realizaron servicios el día de hoy.")
+            self.limpiarCampos()
+    
+        except ValueError as error:
+            print("Error al eliminar los datos: {}".format(error))
 
     

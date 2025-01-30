@@ -26,7 +26,6 @@ class MainApp:
     tree = None
     
     def __init__(self, root):
-        """ Inicializa la ventana principal con una caja de búsqueda y dos botones."""
         self.root = root
         self.root.title("WILLY GARAGE")
         self.root.geometry("1200x600")
@@ -34,7 +33,7 @@ class MainApp:
         set_default_color_theme("green")   
         
         self.switch = CTkSwitch(root, text="Tema", command=self.cambiarTema)
-        self.switch.pack(anchor="ne", pady=10, padx=10)  # "ne" lo coloca en la esquina superior derecha
+        self.switch.pack(anchor="ne", pady=10, padx=10) 
         
         self.tab_control = CTkTabview(root)
         self.tab_control.pack(expand=1, fill="both")
@@ -86,17 +85,18 @@ class MainApp:
         #Estilizar los treeView
         style = ttk.Style()
         style.theme_use('clam')
+
         # Configuración del estilo para Treeview
         style.configure("Custom.Treeview",
-                        font=("Arial", 10),  # Cambiar la fuente
-                        foreground="black",  # Color del texto
-                        background="white",  # Color de fondo de las filas
-                        rowheight=25)  # Altura de las filas
+                        font=("Arial", 10),  
+                        foreground="black",  
+                        background="white",  
+                        rowheight=25) 
 
         # Estilizar las columnas de los encabezados
         style.configure("Custom.Treeview.Heading",
-                        font=("Arial", 11, "bold"),  # Fuente del encabezado
-                        foreground="white",  # Color del texto del encabezado
+                        font=("Arial", 11, "bold"),  
+                        foreground="white", 
                         background="#2FA572")
         
         style.map("Custom.Treeview", background=[('selected', '#979DA2')])
@@ -214,11 +214,9 @@ class MainApp:
         try:
             self.destroy_treeview()
 
-            # Obtener los valores de las cajas de búsqueda
             cliente = self.caja_buscar_cliente.get().title()
             print(f'cliente: {cliente}')
             
-            # Si no hay resultados, mostrar el mensaje
             if not cliente:
                 messagebox.showinfo("Sin resultados", "Ingrese el nombre de un cliente.")
             else: 
@@ -231,7 +229,7 @@ class MainApp:
                     self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
 
                     for i, column in enumerate(self.tree["columns"]):
-                        width = self.column_widths.get(column, 150)  # Usar un valor predeterminado si no está en el diccionario
+                        width = self.column_widths.get(column, 150) 
                         self.tree.column(f"#{i+1}", anchor="center", width=width)
                         self.tree.heading(f"#{i+1}", text=column)
 

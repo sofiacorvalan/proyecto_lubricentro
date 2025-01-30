@@ -8,8 +8,7 @@ from form2 import *
 from buscador import *
 
 class Form1:
-    global ancho, id_seleccionado
-    ancho = 140
+    global id_seleccionado
 
     def __init__(self, root):
         global textBoxFullName, textBoxPhone, textBoxVehicle, textBoxPatente, tree, textBoxBuscar
@@ -40,7 +39,6 @@ class Form1:
             groupBoxBotones = CTkFrame(root, corner_radius=10)
             groupBoxBotones.pack(pady=5)
 
-            # Distribuir los botones en una sola fila
             CTkButton(groupBoxBotones, text="Guardar", fg_color='#8AC859', command=self.guardarRegistros, width=100).grid(row=0, column=0, padx=5, pady=5)
             CTkButton(groupBoxBotones, text="Modificar", fg_color='#BBCD5F', command=self.modificarRegistros, width=100).grid(row=0, column=1, padx=5, pady=5)
             CTkButton(groupBoxBotones, text="Eliminar", fg_color='#E05349', command=self.eliminarRegistros, width=100).grid(row=0, column=2, padx=5, pady=5)
@@ -59,7 +57,7 @@ class Form1:
             treeScrollbar.pack(side="right", fill="y")
 
             # Crear el Treeview
-            tree = ttk.Treeview(treeFrame, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=12, yscrollcommand=treeScrollbar.set)
+            tree = ttk.Treeview(treeFrame, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=10, yscrollcommand=treeScrollbar.set)
             tree.pack(side="left", fill="both", expand=True)
 
             # Configurar el scrollbar para que controle el Treeview
@@ -86,10 +84,11 @@ class Form1:
             groupBoxBuscar = CTkFrame(root, corner_radius=10)
             groupBoxBuscar.pack(pady=5)
 
+            CTkLabel(groupBoxBuscar, text="Cliente:", font=("Arial", 13)).grid(row=0, column=0, sticky="w", padx=10, pady=5)
             textBoxBuscar = CTkEntry(groupBoxBuscar, width=300)
-            textBoxBuscar.grid(row=0, column=0, pady=5, padx=5)
-            CTkButton(groupBoxBuscar, text='Buscar', command=self.buscarCliente).grid(row=0, column=1, pady=5, padx=5)
-            CTkButton(groupBoxBuscar, text='Ver todos', command=self.actualizarTreeView).grid(row=0, column=2, pady=5, padx=5)
+            textBoxBuscar.grid(row=0, column=1, pady=5, padx=5)
+            CTkButton(groupBoxBuscar, text='Buscar', command=self.buscarCliente).grid(row=0, column=2, pady=5, padx=5)
+            CTkButton(groupBoxBuscar, text='Ver todos', command=self.actualizarTreeView).grid(row=0, column=3, pady=5, padx=5)
             
         except ValueError as error:
             print(f"Error al mostrar la interfaz, error: {error}")
@@ -288,6 +287,10 @@ class Form1:
 
             # Obtener el valor de búsqueda
             cliente = textBoxBuscar.get()
+
+            if not cliente:
+                messagebox.showinfo("Información", "Ingrese un cliente.")
+                return
 
             # Buscar clientes
             datos = CClientes.buscarCliente(cliente)
