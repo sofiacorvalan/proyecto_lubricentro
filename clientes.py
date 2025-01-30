@@ -100,3 +100,18 @@ class CClientes:
             return resultado
         except mysql.connector.Error as error:
             print("No fue posible obtener la patente{}".format(error))
+
+    def buscarCliente(nombre):
+        try:
+            cone = CConexion.ConexionBaseDeDatos()
+            cursor = cone.cursor()
+            sql = 'select c.id_cliente, c.nombre_apellido, c.tel_cliente, v.patente, v.modelo_vehiculo from clientes c inner join vehiculos v on c.id_cliente = v.id_cliente where c.nombre_apellido like %s order by c.id_cliente desc;'
+            valores = (f'%{nombre}%',)
+            cursor.execute(sql, valores)
+
+            resultado = cursor.fetchall() 
+            cursor.close()
+            cone.close()
+            return resultado
+        except mysql.connector.Error as error:
+            print("No fue posible obtener la patente{}".format(error))

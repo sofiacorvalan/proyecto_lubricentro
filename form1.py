@@ -12,79 +12,67 @@ class Form1:
     ancho = 140
 
     def __init__(self, root):
-        global textBoxFullName, textBoxPhone, textBoxVehicle, textBoxPatente, tree
+        global textBoxFullName, textBoxPhone, textBoxVehicle, textBoxPatente, tree, textBoxBuscar
 
         try:
             # Crear el Frame para los datos del cliente
             groupBoxCliente = CTkFrame(root, corner_radius=10)
-            groupBoxCliente.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+            groupBoxCliente.pack(pady=5)
 
-            # Configurar las columnas del Frame para que se ajusten automáticamente
-            groupBoxCliente.grid_columnconfigure(0, weight=1, minsize=150)
-            groupBoxCliente.grid_columnconfigure(1, weight=2, minsize=250)
-
-            # Título para el Frame
-            CTkLabel(groupBoxCliente, text="Datos del cliente:", font=("Arial", 15, 'bold')).grid(row=0, column=0, columnspan=2, pady=(0, 15), sticky="n")
-
-            # Campos de entrada para los datos
-            CTkLabel(groupBoxCliente, text="Nombre:", font=("Arial", 13)).grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+            # Usar grid() para organizar los Labels y Entry en una sola fila
+            CTkLabel(groupBoxCliente, text="Nombre:", font=("Arial", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="w")
             textBoxFullName = CTkEntry(groupBoxCliente, width=250)
-            textBoxFullName.grid(row=1, column=1, padx=10, pady=5)
+            textBoxFullName.grid(row=0, column=1, padx=5, pady=5)
 
-            CTkLabel(groupBoxCliente, text="Teléfono:", font=("Arial", 13)).grid(row=2, column=0, sticky="nsew", padx=10, pady=5)
+            CTkLabel(groupBoxCliente, text="Teléfono:", font=("Arial", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="w")
             textBoxPhone = CTkEntry(groupBoxCliente, width=250)
-            textBoxPhone.grid(row=2, column=1, padx=10, pady=5)
+            textBoxPhone.grid(row=1, column=1, padx=5, pady=5)
 
-            CTkLabel(groupBoxCliente, text="Patente:", font=("Arial", 13)).grid(row=3, column=0, sticky="nsew", padx=10, pady=5)
+            CTkLabel(groupBoxCliente, text="Patente:", font=("Arial", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="w")
             textBoxPatente = CTkEntry(groupBoxCliente, width=250)
-            textBoxPatente.grid(row=3, column=1, padx=10, pady=5)
+            textBoxPatente.grid(row=2, column=1, padx=5, pady=5)
 
-            CTkLabel(groupBoxCliente, text="Vehículo:", font=("Arial", 13)).grid(row=4, column=0, sticky="nsew", padx=10, pady=5)
+            CTkLabel(groupBoxCliente, text="Vehículo:", font=("Arial", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="w")
             textBoxVehicle = CTkEntry(groupBoxCliente, width=250)
-            textBoxVehicle.grid(row=4, column=1, padx=10, pady=5)
+            textBoxVehicle.grid(row=3, column=1, padx=5, pady=5)
 
-            # Botones para acciones (sin expansión horizontal)
-            CTkButton(groupBoxCliente, text="Guardar", command=self.guardarRegistros, width=100).grid(row=5, column=0, pady=5, padx=5)
-            CTkButton(groupBoxCliente, text="Modificar", command=self.modificarRegistros, width=100).grid(row=5, column=1, pady=5, padx=5)
-            CTkButton(groupBoxCliente, text="Eliminar", command=self.eliminarRegistros, width=100).grid(row=6, column=0, pady=5, padx=5)
-            CTkButton(groupBoxCliente, text="Limpiar", command=self.limpiarCampos, width=100).grid(row=6, column=1, pady=5, padx=5)
+            # Crear el Frame para los botones
+            groupBoxBotones = CTkFrame(root, corner_radius=10)
+            groupBoxBotones.pack(pady=5)
 
+            # Distribuir los botones en una sola fila
+            CTkButton(groupBoxBotones, text="Guardar", fg_color='#8AC859', command=self.guardarRegistros, width=100).grid(row=0, column=0, padx=5, pady=5)
+            CTkButton(groupBoxBotones, text="Modificar", fg_color='#BBCD5F', command=self.modificarRegistros, width=100).grid(row=0, column=1, padx=5, pady=5)
+            CTkButton(groupBoxBotones, text="Eliminar", fg_color='#E05349', command=self.eliminarRegistros, width=100).grid(row=0, column=2, padx=5, pady=5)
+            CTkButton(groupBoxBotones, text="Limpiar", command=self.limpiarCampos, width=100).grid(row=0, column=3, padx=5, pady=5)
 
             # Crear el Frame para la lista de clientes
             groupBoxLista = CTkFrame(root, corner_radius=10)
-            groupBoxLista.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-
-            # Configurar las columnas del Frame principal para ajustar el espacio disponible
-            root.grid_columnconfigure(0, weight=1)
-            root.grid_columnconfigure(1, weight=1)
-            root.grid_rowconfigure(0, weight=1)
-
-            # Título para el Frame
-            CTkLabel(groupBoxLista, text="Lista de clientes:", font=("Arial", 15, 'bold')).pack(pady=(0, 10))
+            groupBoxLista.pack(pady=5)
 
             # Crear un Frame contenedor para el Treeview y el scrollbar
             treeFrame = CTkFrame(groupBoxLista)
-            treeFrame.pack(fill="both", expand=True)
+            treeFrame.pack(pady=5)
 
             # Crear el scrollbar
             treeScrollbar = ttk.Scrollbar(treeFrame, orient="vertical")
             treeScrollbar.pack(side="right", fill="y")
 
             # Crear el Treeview
-            tree = ttk.Treeview(treeFrame, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=15, yscrollcommand=treeScrollbar.set)
+            tree = ttk.Treeview(treeFrame, style="Custom.Treeview", columns=("Nombre completo", "Teléfono", "Patente", "Vehículo"), show='headings', height=12, yscrollcommand=treeScrollbar.set)
             tree.pack(side="left", fill="both", expand=True)
 
             # Configurar el scrollbar para que controle el Treeview
             treeScrollbar.config(command=tree.yview)
 
             # Configurar columnas y encabezados del Treeview
-            tree.column("#1", anchor=CENTER, width=150)
+            tree.column("#1", anchor=CENTER, width=200)
             tree.heading("#1", text="Nombre y Apellido")
-            tree.column("#2", anchor=CENTER, width=150)
+            tree.column("#2", anchor=CENTER, width=200)
             tree.heading("#2", text="Teléfono")
-            tree.column("#3", anchor=CENTER, width=100)
+            tree.column("#3", anchor=CENTER, width=200)
             tree.heading("#3", text="Patente")
-            tree.column("#4", anchor=CENTER, width=150)
+            tree.column("#4", anchor=CENTER, width=200)
             tree.heading("#4", text="Vehículo")
 
             # Insertar datos en el Treeview (simulación)
@@ -93,6 +81,15 @@ class Form1:
 
             # Configurar evento para selección en el Treeview
             tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
+
+            #Frame para buscar
+            groupBoxBuscar = CTkFrame(root, corner_radius=10)
+            groupBoxBuscar.pack(pady=5)
+
+            textBoxBuscar = CTkEntry(groupBoxBuscar, width=300)
+            textBoxBuscar.grid(row=0, column=0, pady=5, padx=5)
+            CTkButton(groupBoxBuscar, text='Buscar', command=self.buscarCliente).grid(row=0, column=1, pady=5, padx=5)
+            CTkButton(groupBoxBuscar, text='Ver todos', command=self.actualizarTreeView).grid(row=0, column=2, pady=5, padx=5)
             
         except ValueError as error:
             print(f"Error al mostrar la interfaz, error: {error}")
@@ -155,6 +152,7 @@ class Form1:
             textBoxPhone.delete(0, END)
             textBoxVehicle.delete(0, END)
             textBoxPatente.delete(0, END)
+            textBoxBuscar.delete(0, END)
 
             tree.selection_remove(tree.selection())
             tree.focus("")
@@ -281,5 +279,26 @@ class Form1:
                 self.limpiarCampos()
                 Form2.actualizarTreeView()
 
+        except ValueError as error:
+            print("Error al eliminar los datos: {}".format(error))
+
+    def buscarCliente(self):
+        try:
+            tree.delete(*tree.get_children())
+
+            # Obtener el valor de búsqueda
+            cliente = textBoxBuscar.get()
+
+            # Buscar clientes
+            datos = CClientes.buscarCliente(cliente)
+            print(f'DATOS CLIENTES: {datos}')
+
+            if datos:
+                for row in datos:
+                    tree.insert("", "end", values=row[1:], tags=(row[0],))
+            else: 
+                messagebox.showinfo("Información", "No hay clientes con ese nombre.")
+            self.limpiarCampos()
+            
         except ValueError as error:
             print("Error al eliminar los datos: {}".format(error))
