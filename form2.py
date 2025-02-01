@@ -16,7 +16,6 @@ class Form2:
         global textBoxFiltroComb, textBoxFiltroHab, textBoxObservaciones
         global varCambioAceite, varFiltroAceite, varFiltroAire, varFiltroComb, varFiltroHab,tree, habilitar_entry
         global cambioAceiteCheck ,filtroAceiteCheck,filtroAireCheck, filtroCombCheck, filtroHabCheck
-
         
         def habilitar_entry(var, entry):
             """Habilita o deshabilita el Entry según el estado del Checkbutton"""
@@ -416,6 +415,7 @@ class Form2:
         textBoxFiltroComb.delete(0, END)
         textBoxFiltroHab.delete(0, END)
         textBoxObservaciones.delete(0, END)
+        textBoxBuscarPatente.delete(0, END)
         # Desmarcar los Checkbuttons
         varCambioAceite.set(0)
         varFiltroAceite.set(0)
