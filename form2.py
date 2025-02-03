@@ -423,6 +423,9 @@ class Form2:
         varFiltroComb.set(0)
         varFiltroHab.set(0)
 
+        tree.selection_remove(tree.selection())
+        tree.focus("")
+
         # Deshabilitar los Entry    
         textBoxCambioAceite.configure(state='disabled')
         textBoxFiltroAceite.configure(state='disabled')
