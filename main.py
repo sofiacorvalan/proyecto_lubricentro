@@ -16,7 +16,6 @@ class MainApp:
         "Patente": 90,
         "Vehículo": 150,
         "KMs": 85,
-        "Próx. Servicio": 120,
         "Servicio": 150,
         "Detalles": 200,
         "Fecha": 85,
@@ -137,7 +136,7 @@ class MainApp:
             if not resultados:
                 messagebox.showinfo("Sin resultados", "No hay servicios registrados el día de hoy.")
             else:
-                self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)  
+                self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs",  "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)  
 
                 for i, column in enumerate(self.tree["columns"]):
                     width = self.column_widths.get(column, 150)  
@@ -165,7 +164,7 @@ class MainApp:
                 if not resultados_patente:
                     messagebox.showinfo("Sin resultados", "No hay servicios registrados para esta patente")
                 else:
-                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)  
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)  
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  
@@ -195,7 +194,7 @@ class MainApp:
                 if not resultados_vehiculo:
                     messagebox.showinfo("Sin resultados", "Este modelo de vehiculo no tiene servicios registrados.")
                 else:       
-                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
                       
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150)  
@@ -226,7 +225,7 @@ class MainApp:
                 if not resultados_cliente:
                     messagebox.showinfo("Sin resultados", "No hay servicios registrados a nombre del cliente.")
                 else:
-                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
+                    self.tree = ttk.Treeview(self.frame4, style="Custom.Treeview", columns=("Nombre y Apellido", "Patente", "Vehículo", "KMs", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=13)
 
                     for i, column in enumerate(self.tree["columns"]):
                         width = self.column_widths.get(column, 150) 
@@ -246,8 +245,8 @@ class MainApp:
             for row in self.tree.get_children():
                 self.tree.delete(row)
             for row in data:
-                "Nombre y Apellido", "Patente", "Vehículo", "KMs", "Próx. Servicio", "Servicio", "Detalles", "Fecha", "Observaciones"
-                values = (row[0], row[2], row[4], row[3], row[11], row[5], row[6], row[7], row[8])
+                "Nombre y Apellido", "Patente", "Vehículo", "KMs", "Servicio", "Detalles", "Fecha", "Observaciones"
+                values = (row[0], row[2], row[4], row[3], row[5], row[6], row[7], row[8])
                 self.tree.insert("", "end", values=values)
         except ValueError as error:
             print("Error al actualizar tabla {}".format(error))
