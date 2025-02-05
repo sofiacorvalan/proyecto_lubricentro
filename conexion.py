@@ -1,18 +1,15 @@
-import mysql.connector 
+import sqlite3
 
-class CConexion: 
+class CConexion:
 
-   def ConexionBaseDeDatos():
-      try:
-         conexion = mysql.connector.connect(user='root',
-                                            password='SOFIApaola1997',
-                                            host='127.0.0.1',
-                                            database='lubricentrodb',
-                                            port='3306')
-         print("Conexión correcta.")
-         return conexion
-      except mysql.connector.Error as error:
-         print("Error al conectarte a la Base de Datos {}".format(error)) 
-         return conexion
+    @staticmethod
+    def ConexionBaseDeDatos():
+        try:
+            conexion = sqlite3.connect('data/lubricentrodb.sqlite')  # Conexión directa al archivo de la base de datos
+            print("Conexión correcta.")
+            return conexion
+        except sqlite3.Error as error:
+            print(f"Error al conectarte a la Base de Datos: {error}")
+            return None
 
-   ConexionBaseDeDatos()
+CConexion.ConexionBaseDeDatos()

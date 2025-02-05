@@ -1,3 +1,54 @@
+import os
+import shutil
+from datetime import datetime, timedelta
+
+def backup_db():
+    # Ruta de la base de datos original
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/lubricentrodb.sqlite')
+    
+    # Carpeta donde se guardarán los backups
+    backup_folder = os.path.join(os.path.dirname(db_path), 'backups')
+    os.makedirs(backup_folder, exist_ok=True)
+
+    # Nombre del archivo de backup con la fecha de hoy
+    today = datetime.now().strftime('%Y-%m-%d')
+    backup_file = os.path.join(backup_folder, f'backup_{today}.sqlite')
+
+    # Evitar duplicados si ya existe el backup de hoy
+    if not os.path.exists(backup_file):
+        shutil.copy2(db_path, backup_file)
+        print(f'✅ Backup creado: {backup_file}')
+    else:
+        print('ℹ️ El backup de hoy ya existe.')
+
+    # Llamar a la función para limpiar backups antiguos
+    clean_old_backups(backup_folder)
+
+def clean_old_backups(backup_folder, days_to_keep=7):
+    # Fecha límite: cualquier archivo anterior a esto será eliminado
+    limit_date = datetime.now() - timedelta(days=days_to_keep)
+
+    # Recorrer los archivos de la carpeta de backups
+    for filename in os.listdir(backup_folder):
+        if filename.startswith('backup_') and filename.endswith('.sqlite'):
+            file_path = os.path.join(backup_folder, filename)
+            
+            # Obtener la fecha del backup desde el nombre del archivo
+            try:
+                date_str = filename.replace('backup_', '').replace('.sqlite', '')
+                file_date = datetime.strptime(date_str, '%Y-%m-%d')
+                
+                # Eliminar si el archivo es más antiguo que la fecha límite
+                if file_date < limit_date:
+                    os.remove(file_path)
+                    print(f'🗑️ Backup eliminado: {filename}')
+            except ValueError:
+                # Ignorar archivos que no cumplan con el formato esperado
+                pass
+
+# Llamar a la función de backup antes de iniciar la app
+backup_db()
+
 import tkinter as tk
 import customtkinter as ctk
 from customtkinter import *
