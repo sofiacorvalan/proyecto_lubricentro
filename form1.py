@@ -8,7 +8,7 @@ from form2 import *
 from buscador import *
 
 class Form1:
-    global id_seleccionado
+    id_seleccionado = None
 
     def __init__(self, root):
         global textBoxFullName, textBoxPhone, textBoxVehicle, textBoxPatente, tree, textBoxBuscar
@@ -147,6 +147,8 @@ class Form1:
             print("Error al ingresar los datos: {}".format(error))
 
     def limpiarCampos(self):
+        global id_seleccionado
+
         try:
             textBoxFullName.delete(0, END)
             textBoxPhone.delete(0, END)
@@ -156,7 +158,8 @@ class Form1:
 
             tree.selection_remove(tree.selection())
             tree.focus("")
-
+            id_seleccionado=None
+            
         except ValueError as error:
             print(f"No se pudieron borrar los campos de entrada: {error}")
                 
@@ -264,23 +267,26 @@ class Form1:
 
 
     def eliminarRegistros(self):
-        global id_seleccionado
+        
+        if id_seleccionado:
+            try:
+                respuesta = messagebox.askquestion(
+                "¿Está seguro que desea eliminar?",
+                "Se eliminará el cliente y todos los servicios vinculados a esta patente.",
+                icon="warning")
 
-        try:
-            respuesta = messagebox.askquestion(
-            "¿Está seguro que desea eliminar?",
-            "Se eliminará el cliente y todos los servicios vinculados a esta patente.",
-            icon="warning")
+                if respuesta == "yes":
+                    CClientes.eliminarClientes(id_seleccionado)
+                    messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+                    self.actualizarTreeView()
+                    self.limpiarCampos()
+                    Form2.actualizarTreeView()
 
-            if respuesta == "yes":
-                CClientes.eliminarClientes(id_seleccionado)
-                messagebox.showinfo("Información:", "Los datos fueron eliminados.")
-                self.actualizarTreeView()
-                self.limpiarCampos()
-                Form2.actualizarTreeView()
-
-        except ValueError as error:
-            print("Error al eliminar los datos: {}".format(error))
+            except ValueError as error:
+                print("Error al eliminar los datos: {}".format(error))
+        else:
+            print("No hay nada seleccionado.")
+            return
 
     def buscarCliente(self):
         try:

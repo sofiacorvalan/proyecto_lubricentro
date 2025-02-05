@@ -9,13 +9,14 @@ from clientes import *
 from buscador import *
 
 class Form2:
+    id_servicio=None
 
     def __init__(self, root):
         
         global textBoxPatente, textBoxKM, textBoxCambioAceite, textBoxFiltroAceite, textBoxFiltroAire, textBoxBuscarPatente
         global textBoxFiltroComb, textBoxFiltroHab, textBoxObservaciones
         global varCambioAceite, varFiltroAceite, varFiltroAire, varFiltroComb, varFiltroHab,tree, habilitar_entry
-        global cambioAceiteCheck ,filtroAceiteCheck,filtroAireCheck, filtroCombCheck, filtroHabCheck
+        global cambioAceiteCheck ,filtroAceiteCheck,filtroAireCheck, filtroCombCheck, filtroHabCheck, id_servicio
         
         def habilitar_entry(var, entry):
             """Habilita o deshabilita el Entry según el estado del Checkbutton"""
@@ -388,24 +389,29 @@ class Form2:
             print("Error al actualizar tabla {}".format(error))
 
     def eliminarRegistros(self):
-        global id_servicio
-        try:
-            respuesta = messagebox.askquestion(
-            "ELIMINAR",
-            "¿Está seguro que desea eliminar este servicio?",
-            icon="warning")
+         
+        if id_servicio:
+            try:
+                respuesta = messagebox.askquestion(
+                "ELIMINAR",
+                "¿Está seguro que desea eliminar este servicio?",
+                icon="warning")
 
-            if respuesta == "yes":
-                CServicios.eliminarServicios(id_servicio)
-                messagebox.showinfo("Información:", "Los datos fueron eliminados.")
-                self.actualizarTreeView()
-                self.limpiarCampos()
+                if respuesta == "yes":
+                    CServicios.eliminarServicios(id_servicio)
+                    messagebox.showinfo("Información:", "Los datos fueron eliminados.")
+                    self.actualizarTreeView()
+                    self.limpiarCampos()
 
-        except ValueError as error:
-            print("Error al actualizar los datos{}".format(error))
+            except ValueError as error:
+                print("Error al actualizar los datos{}".format(error))
+        else:
+            print("No hay servicio seleccionado.")
+            return
 
 
     def limpiarCampos(self):
+        global id_servicio
         # Limpiar los campos de detalles de los servicios
         textBoxPatente.delete(0, END)
         textBoxKM.delete(0, END)
@@ -440,6 +446,8 @@ class Form2:
         filtroAireCheck.configure(state="normal")
         filtroCombCheck.configure(state="normal")
         filtroHabCheck.configure(state="normal")
+
+        id_servicio=None
 
     def buscarPatente(self):
         try:
