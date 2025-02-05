@@ -79,7 +79,20 @@ class MainApp:
         self.root = root
         self.root.title("WILLY GARAGE")
         self.root.geometry("1200x600")
-        self.root.iconbitmap('bandera1.ico') 
+        # Verifica si el programa se está ejecutando desde el ejecutable
+        if getattr(sys, 'frozen', False):
+            # Si es el ejecutable, usa el directorio temporal generado por PyInstaller
+            app_path = sys._MEIPASS
+        else:
+            # Si es el script original, usa el directorio del script
+            app_path = os.path.dirname(os.path.abspath(__file__))
+
+        # Construye la ruta correcta para el archivo .ico
+        icon_path = os.path.join(app_path, "bandera1.ico")
+
+        # Establece el ícono en la ventana
+        self.root.iconbitmap(icon_path)
+        #self.root.iconbitmap('bandera1.ico') 
         set_default_color_theme("green")   
         
         self.switch = CTkSwitch(root, text="Tema", command=self.cambiarTema)

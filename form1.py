@@ -113,7 +113,8 @@ class Form1:
             if not textBoxPhone.get().isdigit():  # Verificar que sean solo números
                 messagebox.showinfo("Error de datos", "El teléfono debe contener solo números.")
                 return
-            elif len(textBoxPhone.get()) < 10 or len(textBoxPhone.get()) > 13:  # Verificar rango
+            elif len(textBoxPhone.get()) < 10 or len(textBoxPhone.get()) > 13:  
+                # Verificar rango
                 messagebox.showinfo("Error de datos", "El teléfono debe tener entre 10 y 13 dígitos.")
                 return
             else:
@@ -123,7 +124,7 @@ class Form1:
             if len(textBoxPatente.get()) < 6 or len(textBoxPatente.get()) > 8 :  # Ejemplo: Patentes argentinas suelen tener 6-7 caracteres
                 messagebox.showinfo("Error de datos", "La patente debe tener entre 6 y 8 caracteres.")
                 return
-            elif CClientes.verificarPatente(textBoxPatente.get()):
+            elif CClientes.verificarPatente(textBoxPatente.get().upper()):
                 messagebox.showinfo("Error de datos", "La patente ya está registrada.")
                 return
             else:

@@ -4,6 +4,8 @@ class CClientes:
 
     @staticmethod
     def mostrarClientes():
+        cone = None
+        cursor = None
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -22,6 +24,9 @@ class CClientes:
     
     @staticmethod
     def ingresarClientes(nombre_apellido, tel_cliente, patente, modelo_vehiculo):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -49,6 +54,9 @@ class CClientes:
     
     @staticmethod
     def modificarClientes(id_cliente, nombre_apellido, tel_cliente, patente, modelo_vehiculo):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -71,6 +79,9 @@ class CClientes:
 
     @staticmethod
     def eliminarClientes(id_seleccionado):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -92,6 +103,9 @@ class CClientes:
 
     @staticmethod
     def verificarPatente(patente):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -112,6 +126,9 @@ class CClientes:
 
     @staticmethod
     def mostrarClienteID(id):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -131,6 +148,9 @@ class CClientes:
 
     @staticmethod
     def buscarCliente(nombre):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()

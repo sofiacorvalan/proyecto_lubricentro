@@ -1,7 +1,7 @@
 from conexion import *
 
 class CBuscador:
-
+    
     @staticmethod
     def ejecutarConsulta(sql_consulta, valores=()):
         cone = None

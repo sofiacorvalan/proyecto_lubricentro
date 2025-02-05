@@ -1,9 +1,12 @@
 from conexion import *
 
 class CServicios:
-
+    
     @staticmethod
     def mostrarServiciosRealizados():
+        cone = None
+        cursor = None
+        
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -23,6 +26,9 @@ class CServicios:
     
     @staticmethod    
     def ingresarServicios(fecha, km_actual, patente, observaciones, servicios):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
@@ -60,47 +66,55 @@ class CServicios:
 
     @staticmethod
     def modificarServicios(km_actual, observaciones,id_general, detalles, id_servicio_realizado):
-            try:
-                cone = CConexion.ConexionBaseDeDatos();
-                cursor = cone.cursor()
-                sql_servicio_general = "update servicio_general set km_actual = ?, observaciones = ? where id_general=?;"
-                valores_servicio_general = (km_actual, observaciones, id_general)
-                cursor.execute(sql_servicio_general, valores_servicio_general)
+        cone = None
+        cursor = None
+        try:
+            cone = CConexion.ConexionBaseDeDatos();
+            cursor = cone.cursor()
+            sql_servicio_general = "update servicio_general set km_actual = ?, observaciones = ? where id_general=?;"
+            valores_servicio_general = (km_actual, observaciones, id_general)
+            cursor.execute(sql_servicio_general, valores_servicio_general)
 
-                sql_servicio_realizado = "update servicios_realizados set detalles= ? where id_servicio_realizado=?"
-                valores_servicio_realizado = (detalles, id_servicio_realizado)
-                cursor.execute(sql_servicio_realizado, valores_servicio_realizado)
-                cone.commit()
-                print(cursor.rowcount, "Registro actualizado.")
-    
-            except sqlite3.Error as error:
-                print(f"Error al actualizar datos {error}")
-            finally:
-                if cursor:
-                    cursor.close()
-                if cone:
-                    cone.close()
+            sql_servicio_realizado = "update servicios_realizados set detalles= ? where id_servicio_realizado=?"
+            valores_servicio_realizado = (detalles, id_servicio_realizado)
+            cursor.execute(sql_servicio_realizado, valores_servicio_realizado)
+            cone.commit()
+            print(cursor.rowcount, "Registro actualizado.")
+
+        except sqlite3.Error as error:
+            print(f"Error al actualizar datos {error}")
+        finally:
+            if cursor:
+                cursor.close()
+            if cone:
+                cone.close()
 
     @staticmethod
     def eliminarServicios(id_seleccionado):
-            try:
-                cone = CConexion.ConexionBaseDeDatos();
-                cursor = cone.cursor()
-                sql_servicio = "delete from servicios_realizados where id_servicio_realizado=?"
-                valores = (id_seleccionado,)
-                cursor.execute(sql_servicio, valores)
-                cone.commit()
-                print(cursor.rowcount, "Registro Eliminado.")
-            except sqlite3.Error as error:
-                print(f"No fue posible eliminar el registro{error}")
-            finally:
-                if cursor:
-                    cursor.close()
-                if cone:
-                    cone.close()
+        cone = None
+        cursor = None
+
+        try:
+            cone = CConexion.ConexionBaseDeDatos();
+            cursor = cone.cursor()
+            sql_servicio = "delete from servicios_realizados where id_servicio_realizado=?"
+            valores = (id_seleccionado,)
+            cursor.execute(sql_servicio, valores)
+            cone.commit()
+            print(cursor.rowcount, "Registro Eliminado.")
+        except sqlite3.Error as error:
+            print(f"No fue posible eliminar el registro{error}")
+        finally:
+            if cursor:
+                cursor.close()
+            if cone:
+                cone.close()
 
     @staticmethod
     def buscarPatente(patente):
+        cone = None
+        cursor = None
+
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
