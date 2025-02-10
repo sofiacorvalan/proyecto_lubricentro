@@ -105,33 +105,24 @@ class Form2:
 
             # Crear el scrollbar
             treeScrollbar = ttk.Scrollbar(treeFrame, orient="vertical")
-            treeScrollbar.pack(side="right", fill="y")    
+            treeScrollbar.pack(side="right", fill="y")
 
-            tree = ttk.Treeview(treeFrame, style='Custom.Treeview',columns=("Patente","KMs", "Vehículo", "Servicio", "Detalles", "Fecha", "Observaciones"), show='headings', height=10,yscrollcommand=treeScrollbar.set)
+            # Configurar el Treeview
+            columnas = ("Patente", "KMs", "Vehículo", "Servicio", "Detalles", "Fecha", "Observaciones")
+            tree = ttk.Treeview(treeFrame, style='Custom.Treeview', columns=columnas, show='headings', height=10, yscrollcommand=treeScrollbar.set)
             tree.pack(side="left", fill="both", expand=True)
 
             # Configurar el scrollbar para que controle el Treeview
             treeScrollbar.config(command=tree.yview)
 
-            tree.column("# 1", anchor=CENTER, width=90)
-            tree.heading("# 1", text="Patente")
-            tree.column("# 2", anchor=CENTER, width=85)
-            tree.heading("# 2", text="KMs")
-            tree.column("# 3", anchor=CENTER, width=150)
-            tree.heading("# 3", text="Vehículo")
-            tree.column("# 4", anchor=CENTER, width=150)
-            tree.heading("# 4", text="Servicio")
-            tree.column("# 5", anchor=CENTER, width=220)
-            tree.heading("# 5", text="Detalles")
-            tree.column("# 6", anchor=CENTER, width=85)
-            tree.heading("# 6", text="Fecha")
-            tree.column("# 7", anchor=CENTER, width=250)
-            tree.heading("# 7", text="Observaciones")
-                        
-            for row in CServicios.mostrarServiciosRealizados():
-                tags = (row[0], row[8], row[9])
-                tree.insert("", "end", values=row[1:-2], tags=tags)
-            
+            # Configurar encabezados y columnas dinámicamente
+            tamanos_columnas = [90, 85, 150, 150, 220, 85, 250]
+            for i, col in enumerate(columnas):
+                tree.column(f"# {i+1}", anchor=CENTER, width=tamanos_columnas[i])
+                tree.heading(f"# {i+1}", text=col)
+
+            # Llenar el Treeview
+            self.actualizarTreeView()
             tree.bind("<<TreeviewSelect>>", self.seleccionarRegistros)
             
             #Frame para buscar
@@ -238,7 +229,8 @@ class Form2:
 
     def seleccionarRegistros(self, e):
         global id_general,id_servicio
-
+        textBoxPatente.delete(0, END)     
+        
         try:
             itemSeleccionado = tree.focus()
             tags = tree.item(itemSeleccionado, "tags")
@@ -408,7 +400,6 @@ class Form2:
         else:
             print("No hay servicio seleccionado.")
             return
-
 
     def limpiarCampos(self):
         global id_servicio

@@ -103,7 +103,7 @@ class CBuscador:
             INNER JOIN servicio_general sg ON sg.patente = v.patente
             INNER JOIN servicios_realizados sr ON sg.id_general = sr.id_general
             INNER JOIN servicios s ON s.id_servicio = sr.id_servicio
-            WHERE DATE(sg.fecha) = DATE('now')
+            WHERE strftime('%Y-%m-%d', sg.fecha) = DATE('now', 'localtime')
             ORDER BY sr.id_servicio_realizado DESC
         '''
         return CBuscador.ejecutarConsulta(sql)

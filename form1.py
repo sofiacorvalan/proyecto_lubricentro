@@ -73,7 +73,6 @@ class Form1:
             tree.column("#4", anchor=CENTER, width=200)
             tree.heading("#4", text="Vehículo")
 
-            # Insertar datos en el Treeview (simulación)
             for row in CClientes.mostrarClientes():
                 tree.insert("", "end", values=row[1:], tags=(row[0],))
 

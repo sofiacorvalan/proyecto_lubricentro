@@ -65,7 +65,7 @@ class MainApp:
     column_widths = {
         "Nombre y Apellido": 150,
         "Patente": 90,
-        "Vehículo": 150,
+        "Vehículo": 200,
         "KMs": 85,
         "Servicio": 150,
         "Detalles": 200,
@@ -91,8 +91,7 @@ class MainApp:
         icon_path = os.path.join(app_path, "bandera1.ico")
 
         # Establece el ícono en la ventana
-        self.root.iconbitmap(icon_path)
-        #self.root.iconbitmap('bandera1.ico') 
+        self.root.iconbitmap(icon_path) 
         set_default_color_theme("green")   
         
         self.switch = CTkSwitch(root, text="Tema", command=self.cambiarTema)
@@ -168,7 +167,6 @@ class MainApp:
         self.frame4.pack(pady=5)
 
         Form1(self.tab_clientes)
-    
         Form2(self.tab_servicios)  
         
         #Footer
@@ -179,12 +177,14 @@ class MainApp:
         footer_label.pack()
 
     def cambiarTema(self):
-        if self.switch.get():
+        current_mode = get_appearance_mode()
+
+        if current_mode.lower() == 'light':  
+            set_appearance_mode('dark')
+            print('oscuro')
+        else:
             set_appearance_mode('light')
             print('claro')
-        else:
-            print('oscuro')
-            set_appearance_mode('dark')
 
     def destroy_treeview(self):
         if self.tree:

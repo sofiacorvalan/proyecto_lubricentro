@@ -85,16 +85,19 @@ class CClientes:
         try:
             cone = CConexion.ConexionBaseDeDatos()
             cursor = cone.cursor()
-            sql_vehiculos = "delete from vehiculos where id_cliente=?"
-            valores = (id_seleccionado,)
-            cursor.execute(sql_vehiculos, valores)
-            sql_clientes = "delete from clientes where id_cliente=?"
-            cursor.execute(sql_clientes, valores)
+
+            # Asegúrate de que las claves foráneas estén habilitadas
+            cursor.execute("PRAGMA foreign_keys = ON;")
+
+            # Eliminar el cliente, lo que debería propagar la eliminación en cascada
+            sql_clientes = "DELETE FROM clientes WHERE id_cliente=?"
+            cursor.execute(sql_clientes, (id_seleccionado,))
+
             cone.commit()
             print(cursor.rowcount, "Registro Eliminado.")
-        
+
         except sqlite3.Error as error:
-            print("No fue posible eliminar el registro{}".format(error))
+            print("No fue posible eliminar el registro: {}".format(error))
         finally:
             if cursor:
                 cursor.close()
